@@ -24,9 +24,10 @@ social-network-links:
 rss-description: Feed on my many years of mistakes!
 
 share-links-active:
-  github: true
-  youtube: true
-  linkedin: true
+  github: false
+  youtube: false
+  linkedin: false
+  vk: false
 
 url-pretty: "dentondav.id"
 
