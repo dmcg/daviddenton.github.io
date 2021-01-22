@@ -33,13 +33,7 @@ round-avatar: true
 # then specify the following parameter
 #title-img: /path/to/image
 
-
-# --- Footer social media links --- #
-
-# Select the social network links that you want to show in the footer.
-# Uncomment the links you want to show and add your information to each one.
 social-network-links:
-  email: "someone@example.com"
   github: dentondavid
   youtube: c/daattali
   linkedin: denton-david
@@ -51,7 +45,7 @@ share-links-active:
   youtube: true
   linkedin: true
 
-url-pretty: "dentondav.id"
+#url-pretty: "dentondav.id"
 
 excerpt_length: 50
 
