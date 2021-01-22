@@ -130,7 +130,6 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - docs/
-  - CNAME
 
 plugins:
   - jekyll-paginate
