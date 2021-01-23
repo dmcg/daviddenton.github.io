@@ -43,6 +43,8 @@ object _4 {
             operator fun invoke(dir: File): FileSystem = LocalFileSystem(dir)
         }
     }
+
+    val fs = LocalFileSystem(File(".")) // to the IDE, fs is now a FileSystem
 }
 
 object _5 {
