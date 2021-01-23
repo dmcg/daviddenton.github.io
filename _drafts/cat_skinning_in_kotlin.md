@@ -4,10 +4,18 @@ title: something something something objects
 tags: [kotlin, functions, design]
 comments: false
 ---
-### tl;dr:
-In which I try to reason with myself about the various ways in which construct programs as a mixture of object creation and calls to top-level functions.
 
-### meat
+### about
+In which I try to reason with myself about the various ways to construct programs as a mixture of object creation and calls to top-level functions.
+
+<hr/>
+
+### tl;dr
+> **"Wherever possible, don't promote an object to have class identity when it is only providing partial application of common parameters"**
+
+<hr/>
+
+### rtfa
 
 I've been thinking recently about the transition I've made over the last few years. Like many others, I cut my teeth on this industry as a typical self-taught OO programmer coding Java for a living, and life seemed - if not easy - at least something that was tractable. Spin forward a decade or so and my style of programming evolved as I finally met some talented folks and started to really use an IDE properly, and to embrace concepts such as immutability and collections processing with higher order functions.
 
