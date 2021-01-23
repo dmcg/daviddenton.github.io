@@ -35,22 +35,22 @@ val fileSystem: FileSystem = FileSystem(File("."))
 val localDirs = fileSystem.directories()
 ```
 
-Does this structure look familiar - just a constructor containing references to immutable vals and a bunch of functions using them? Alternatively, Kotlin gives us the facility to eschew the class instance entirely and just use top-level functions.
+Does this structure look familiar - just a constructor containing references to immutable vals and a bunch of functions using them? Alternatively, Kotlin gives us the facility to write out APIs in a much more full-on FP mode, eschew the class instance entirely, and just use top-level functions.
 
 ```kotlin
-fun directories(dir: File) =  dir.listFiles(FileFilter { it.isDirectory })
+fun directories(dir: File) = dir.listFiles(FileFilter { it.isDirectory })
 val otherLocalDirs = directories(File("."))
 ```
 
-There is no mutable state here. The two examples are effectively identical, apart from the class instance is only used as a way of fixing the `dir` parameter - ie. it's just a mechanism of partial application of the top level functions. In this way a lot of our class instances that we create in our Stateless Microservices Themepark™ can just be thought of a set of partially applied functions over some common parameters - be they directories, HTTP clients or database connections. 
+There is no mutable state here. The two examples are effectively identical, apart from the class instance is only used as a way of fixing the `dir` parameter - ie. it's just a mechanism of partial application of the `directories()` function. In this way a lot of our class instances that we create in our Stateless Microservices Themepark™ can just be thought of a set of partially applied functions over some common parameters - be they directories, HTTP clients or database connections. So why even create it at all?
 
-Aha, but I hear the cry, our `FileSystem` class actually defines an entity or concept in our system! Well, this may appear true - but it's actually not the presence of the class that defines this entity - it's actually the interface that's important. 
+Aha, but I hear the cry, our `FileSystem` class actually defines an entity or concept in our system! It gives us a nicer thing to deal with than method reference of the function. And what happens if we add a second function? Well, this may appear true - but it's actually not the presence of the class that defines this entity - it's actually the interface that's important. 
 
-This is all good design thinking as per what we (should have been) taught back at OO-School - to design our systems mostly in terms of abstract roles/interfaces and avoid references to concrete classes, before it was the trend to create an interface for every "Hav-er/Doer/Service" because a DI container or mocking framework demanded that's what you should be doing. Previously, an interface represented an capability eg. `Iterable` or `Comparable`. Now, we just swam in a sea of `MyRepositoryService` (implemented by the inevitable `MyRepositoryServiceImpl`).
+This is all good design thinking as per what we were taught back in OO-School - to design our systems mostly in terms of abstract roles/interfaces and avoid references to concrete classes, before it was the trend to create an interface for every "Hav-er/Doer/Service" because a DI container or mocking framework demanded that's what you should be doing. In the before-times, an interface represented an capability that an object had eg. `Iterable` or `Comparable`. Now, we just swam in a sea of `MyRepositoryService` (implemented by the inevitable `MyRepositoryServiceImpl`).
 
 But I digress.
 
-If we want to pursue this option, we can decide to extract a `FileSystem` interface and make this change (which admittedly you may have actually started with anyway, should you have had the foresight to anticipate the change to this previously unremarkable class):
+If we want to pursue the abstraction, we can decide to extract a `FileSystem` interface and make this change (which admittedly you may have actually started with anyway, should you have had the foresight to anticipate the change to this previously unremarkable class):
 
 ```kotlin
 interface FileSystem {
@@ -64,14 +64,14 @@ class LocalFileSystem(private val dir: File) : FileSystem {
 val localDirs = LocalFileSystem(File(".")).directories()
 ```
 
-There are, however, downsides to this action. Firstly, introducing the `LocalFileSystem` class is a breaking/invasive change - our API users suddenly have to deal with the new class construction API. Additionally, that `LocalFileSystem` is even now visible muddies the waters in terms of type-inference means that Kotlin will automatically assign the most accurate type that it can to a reference of `LocalFileSystem` instance when we extract the object as a field, variable or parameter:
+There are, however, downsides to this action. Firstly, introducing the `LocalFileSystem` class is a breaking/invasive change - our API users suddenly have to deal with the new class construction API. Additionally, that `LocalFileSystem` is even now visible muddies the waters in terms of type-inference, and that Kotlin will automatically assign the most accurate type that it can to a reference of `LocalFileSystem` instance when we extract the object as a field, variable or parameter:
 
 ```kotlin
 val fs = LocalFileSystem(File(".")) // to the IDE, fs is a LocalFileSystem
 val localDirs = fs.directories()
 ```
 
-There are of course workarounds to these problems, but in 2021 they feel clunky. For instance, we could privatise the constructor then create an `invoke()` method on the `LocalFileSystem` companion object that mimics the constructor interface and returns the `FileSystem` interface:
+This isn't a problem when you are manually changing two references in other code, but it gets more tedious and error prone as the number of changes grows. There are of course workarounds to these problems, but they feel extremely clunky. For instance, we could privatise the constructor then create an `invoke()` method on the `LocalFileSystem` companion object that mimics the constructor interface and returns the `FileSystem` interface:
 
 ```kotlin
 class LocalFileSystem private constructor(private val dir: File) : FileSystem {
@@ -83,7 +83,7 @@ class LocalFileSystem private constructor(private val dir: File) : FileSystem {
 }
 ```
 
-Ewww - this is a lot of effort, and we still have a class identity hanging around even if we can't construct one! Instead we could cut to the chase, dispose of the class entirely, and just use a top-level function `FileSystem` which mimics the constructor. It's the perfect crime - to the API client there is no difference between the two approaches - they're constructing and using a FileSystem and the contract is still in place. Additionally we have avoiding polluting our namespace with one extra class for the API reader to wonder about:
+Ewww - this is all a lot of effort, and we still have a class identity hanging around even if we can't construct one! Instead we could cut to the chase, dispose of the class entirely, and just use a top-level function `FileSystem` which mimics the constructor. It's the perfect crime - to the API client there is no difference between the two approaches - they're constructing and using a FileSystem and the contract is still in place. Additionally we have avoiding polluting our namespace with one extra class for the API reader to wonder about:
 
 ```kotlin
 fun FileSystem(dir: File): FileSystem = object : FileSystem {
@@ -94,7 +94,7 @@ val fs = FileSystem(File(".")) // to the IDE, fs is a FileSystem
 val localDirs = fs.directories()
 ```
 
-It should be noted that the above approach may anger the "Kotlin-style gods" because of the Capital at the start of the function name. But Kotlin allows us to inhabit this mixed class-based/functional world where there is no `new` keyword. This opens up different styles of API design to us, and also leads to more interesting philosophical questions such as:
+It should be noted that the above approach may anger the "Kotlin-style gods" because of the capital at the start of the function name. But Kotlin allows us to inhabit this mixed class-based/functional world where there is no `new` keyword. This opens up different styles of API design to us, and also leads to more interesting philosophical questions such as:
 
 > "What does the presence of a Capital letter even mean and should our clients even care?"
 
