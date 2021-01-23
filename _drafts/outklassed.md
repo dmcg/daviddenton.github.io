@@ -1,6 +1,6 @@
 ---
 layout: post 
-title: How Kotlin taught me to rethink application design.
+title: Outklassed: How Kotlin taught me to rethink application design
 tags: [kotlin, fp, design]
 comments: false
 ---
