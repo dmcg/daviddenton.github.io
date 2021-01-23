@@ -1,6 +1,6 @@
 ---
 layout: post 
-title: Outklassed: How Kotlin taught me to rethink application design
+title: "Outklassed: How Kotlin taught me to rethink application design"
 tags: [kotlin, fp, design]
 comments: false
 ---
@@ -10,7 +10,7 @@ In which I try to reason with myself about how five years of Kotlin has encourag
 <hr/>
 
 ### tl;dr
-> **"Wherever possible, don't eagerly promote an created object instance to have class identity when it is only providing partial application of common parameters over an abstraction. Minimise the exposed API surface wherever possible."**
+> **"Wherever possible, don't eagerly promote an created object instance to have class identity when it is only providing partial application of common parameters over an abstraction. Minimise your exposed API surface wherever possible."**
 
 <hr/>
 
