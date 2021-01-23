@@ -13,3 +13,7 @@ Gemfile.lock
 beautiful-jekyll-theme-*.gem
 .idea
 *.iml
+
+.gradle/
+build/
+out/
