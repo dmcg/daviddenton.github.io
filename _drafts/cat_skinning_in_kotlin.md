@@ -16,15 +16,15 @@ In which I try to reason with myself about the various ways to construct program
 
 ### rtfa
 
-I've been thinking recently about the transition in coding style I've made over the last few years. Like many others, I cut my teeth in this industry as a typical self-taught OO programmer coding Java for a living, and life seemed - if not easy - at least something that was tractable. Spin forward a decade or so and my style of programming evolved as I finally met some talented folks who knew how to use an IDE properly, and to embrace concepts such as immutability and collections processing with higher order functions.
+I've been thinking recently about the transition in coding style I've made over the last few years. Like many others, I cut my teeth in this industry as a typical self-taught OO programmer coding Java for a living, and life seemed - if not easy - at least something that was tractable. We all knew when and how to create objects and that objects held mutable state. Spin forward a decade or so and my style of programming evolved as I finally met some talented folks who knew how to use an IDE properly, and to embrace concepts such as immutability and collections processing with higher order functions. This was even better - coding was simpler and safer but the fundamentals were the same.
 
 And then I met Kotlin.
 
 Now the pendulum has swung for me, and the needle on the functional/object-oriented dial is buried deep in the FP half. Top-level functions became available whereas previously in Java everything had to exist within the context of a class.
 
-Far from simply creating application object trees with custom classes named in the "Hav-er/Doer/Service" style, I now actively concentrate on avoiding the creation of new classes and relying instead on composing things from simple abstractions created by calling simple functions.
+Far from simply creating application object trees with custom classes named in the "Hav-er/Doer/Service" style, I was now actively noticed the lines blurring and started to avoid the creation of new classes and relying instead on composing things from simple abstractions created by calling floating functions.
 
-Let's ask ourselves - what *is* the purpose of an object with class identity when we are now so concentrated on minimising mutable state? For example, consider a typical interface and class which we might create and use:
+But why? To answer, let's ask ourselves - what *is* the purpose of an object with class identity when we are now so concentrated on minimising mutable state? For example, consider a typical interface and class which we might create and use:
 
 ```kotlin
 class FileSystem(private val dir: File) {
