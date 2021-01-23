@@ -10,7 +10,7 @@ object _1 {
     val fileSystem: FileSystem = FileSystem(File("."))
     val localDirs = fileSystem.directories()
 
-    fun directories(dir: File) =  dir.listFiles(FileFilter { it.isDirectory })
+    fun directories(dir: File) = dir.listFiles(FileFilter { it.isDirectory })
     val otherLocalDirs = directories(File("."))
 }
 
@@ -32,6 +32,20 @@ object _3 {
 }
 
 object _4 {
+    interface FileSystem {
+        fun directories(): Array<File>
+    }
+
+    class LocalFileSystem private constructor(private val dir: File) : FileSystem {
+        override fun directories() = dir.listFiles(FileFilter { it.isDirectory })
+
+        companion object {
+            operator fun invoke(dir: File): FileSystem = LocalFileSystem(dir)
+        }
+    }
+}
+
+object _5 {
     interface FileSystem {
         fun directories(): Array<File>
     }
