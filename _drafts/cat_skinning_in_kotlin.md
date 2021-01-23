@@ -5,23 +5,22 @@ tags: [kotlin, functions, design]
 comments: false
 ---
 
-### about
 In which I try to reason with myself about the various ways to construct programs as a mixture of object creation and calls to top-level functions.
 
 <hr/>
 
 ### tl;dr
-> **"Wherever possible, don't promote an object to have class identity when it is only providing partial application of common parameters"**
+> **"Wherever possible, don't promote an object to have class identity when it is only providing partial application of common parameters."**
 
 <hr/>
 
 ### rtfa
 
-I've been thinking recently about the transition I've made over the last few years. Like many others, I cut my teeth on this industry as a typical self-taught OO programmer coding Java for a living, and life seemed - if not easy - at least something that was tractable. Spin forward a decade or so and my style of programming evolved as I finally met some talented folks and started to really use an IDE properly, and to embrace concepts such as immutability and collections processing with higher order functions.
+I've been thinking recently about the transition in coding style I've made over the last few years. Like many others, I cut my teeth in this industry as a typical self-taught OO programmer coding Java for a living, and life seemed - if not easy - at least something that was tractable. Spin forward a decade or so and my style of programming evolved as I finally met some talented folks and started to really use an IDE properly, and to embrace concepts such as immutability and collections processing with higher order functions.
 
 And then I met Kotlin.
 
-Now, the pendulum has swung for me, and the line between functional and object-oriented thinking is firmly buried in the FP half of the dial. Far from simply creating application object trees with classes named in the "Hav-er/Do-er" style, I now try to spend as much of my time as possible avoiding the creation of new classes and relying on composing programs from simple calls to functions instead.
+Now, the pendulum has swung for me, and the line between functional and object-oriented thinking is buried deep in the FP half of the dial. Far from simply creating application object trees with classes named in the "Hav-er/Do-er" style, I now try to spend as much of my time as possible avoiding the creation of new classes and relying on composing things from simple calls to functions instead.
 
 Let's ask ourselves - what *is* the purpose of an object with class identity when we are now concentrated on minimising mutable state? For example, consider a typical interface and class which we might create and use:
 
@@ -41,7 +40,7 @@ fun directories(dir: File) =  dir.listFiles(FileFilter { it.isDirectory })
 val otherLocalDirs = directories(File("."))
 ```
 
-There is no mutable state here. The two examples are effectively identical, apart from the class instance is only used as a way of fixing the `dir` parameter - ie. it's just an alternate means of partial application of the top level functions. In this way a lot of our class instances that we create in our now universal Stateless Microservices™ can just be thought of a set of partially applied functions over some common parameters - be they file directories or HTTP clients. 
+There is no mutable state here. The two examples are effectively identical, apart from the class instance is only used as a way of fixing the `dir` parameter - ie. it's just an alternate means of partial application of the top level functions. In this way a lot of our class instances that we create in our now universal Stateless Microservices™ can just be thought of a set of partially applied functions over some common parameters - be they directories, HTTP clients or database connections. 
 
 Ah, but I hear the cry, "our `FileSystem` class actually defines an entity or concept in our system!". Well, this may appear true - but it's actually not the presence of the class that defines this entity - it's the interface. This is all good design thinking that we were taught back at OO School - to program mostly in terms of interfaces and avoid references to concrete classes. When we realise this, we extract the interface and make this change (which admittedly you may have actually started with anyway, should you have had the foresight to anticipate the change to this previously unremarkable class):
 
