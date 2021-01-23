@@ -27,8 +27,8 @@ object _2 {
 }
 
 object _3 {
-    val localFs: LocalFileSystem = LocalFileSystem(File("."))
-    val localDirs = localFs.directories()
+    val fs = LocalFileSystem(File(".")) // to the IDE, fs is a LocalFileSystem
+    val localDirs = fs.directories()
 }
 
 object _4 {
@@ -40,5 +40,6 @@ object _4 {
         override fun directories() = dir.listFiles(FileFilter { it.isDirectory })
     }
 
-    val localDirs = FileSystem(File(".")).directories()
+    val fs = FileSystem(File(".")) // to the IDE, fs is a FileSystem
+    val localDirs = fs.directories()
 }
