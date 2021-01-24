@@ -38,7 +38,7 @@ title: David Denton
         padding: 30px;
     }
 
-    img.hero-link {
+    img.dim-link {
         width: 75px;
         padding-bottom: 100px;
     }
@@ -49,6 +49,10 @@ title: David Denton
 
     a:hover {
         text-decoration: none;
+    }
+
+    .dim-link:hover {
+        opacity:0.5;
     }
 
     footer {
@@ -64,7 +68,7 @@ title: David Denton
     <br/>
         {%- for link in site.navbar-links -%}
             <span style="padding: 20px">
-                <a href="{{ link[1] | relative_url }}"><img class="hero-link"  src="/assets/img/{{ link[0] }}_icon.png" alt="{{ link[0] }}"/></a>
+                <a href="{{ link[1] | relative_url }}"><img class="dim-link" src="/assets/img/{{ link[0] }}_icon.png" alt="{{ link[0] }}"/></a>
             </span>
         {%- endfor -%}
 </div>
