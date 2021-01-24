@@ -1005,3 +1005,7 @@ pre {
     background-color: #8b7e1e;
     border-color: #8b7e1e;
 }
+
+h2, h3, h4, h5, h6 {
+  color: #1f5585;
+}
