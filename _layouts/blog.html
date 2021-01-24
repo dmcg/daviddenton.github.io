@@ -57,27 +57,27 @@ layout: page
       Posted on {{ post.date | date: date_format }}
     </p>
 
-    {% if thumbnail != "" %}
+    {% if post.thumbnail != "" %}
     <div class="post-image post-image-small">
       {% if post.external_url %}
         <a href="{{ post.external_url }}" aria-label="Thumbnail">
       {% else %}
         <a href="{{ post.url | absolute_url }}" aria-label="Thumbnail">
       {% endif %}
-        <img src="{{ thumbnail | absolute_url }}" alt="Post thumbnail">
+        <img src="{{ post.thumbnail | absolute_url }}" alt="Post thumbnail">
       </a>
     </div>
     {% endif %}
 
     {% unless site.feed_show_excerpt == false %}
-    {% if thumbnail != "" %}
+    {% if post.thumbnail != "" %}
     <div class="post-image post-image-short">
       {% if post.external_url %}
         <a href="{{ post.external_url }}" aria-label="Thumbnail">
       {% else %}
         <a href="{{ post.url | absolute_url }}" aria-label="Thumbnail">
       {% endif %}
-        <img src="{{ thumbnail | absolute_url }}" alt="Post thumbnail">
+        <img src="{{ post.thumbnail | absolute_url }}" alt="Post thumbnail">
       </a>
     </div>
     {% endif %}
