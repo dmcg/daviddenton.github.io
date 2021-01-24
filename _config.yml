@@ -104,7 +104,7 @@ timezone: "Europe/London"
 markdown: kramdown
 highlighter: rouge
 permalink: /posts/:year/:month/:title
-paginate: 8
+paginate: 6
 
 kramdown:
   input: GFM
