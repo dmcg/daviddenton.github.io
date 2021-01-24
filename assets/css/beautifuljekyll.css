@@ -1014,3 +1014,12 @@ h2, h3, h4, h5, h6 {
     opacity: 0.5;
     transition: opacity 0.2s ease-in-out;
 }
+
+a.tag {
+    padding: 5px 5px 5px 5px;
+}
+
+a.tag:hover {
+    background-color: #1e528b;
+    color: #ffffff;
+}
