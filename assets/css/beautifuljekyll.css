@@ -993,3 +993,15 @@ pre {
   display: block;
   margin: 0 auto;
 }
+
+.btn-primary {
+    color: #fff;
+    background-color: #1e528b;
+    border-color: #1e528b;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #8b7e1e;
+    border-color: #8b7e1e;
+}

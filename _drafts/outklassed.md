@@ -7,7 +7,7 @@ comments: false
 
 In which I try to reason with myself about how five years of Kotlin has encouraged me to construct programs.
 
-<img src="../assets/img/outklassed.jpg" alt="construction"/>
+<img src="../../../assets/img/outklassed.jpg" alt="construction"/>
 
 <hr/>
 
