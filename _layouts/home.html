@@ -16,7 +16,7 @@ title: David Denton
         max-height: 100%;
     }
 
-    div.hero {
+    div.hero-div {
         background-color: {{ site.navbar-col }};
     }
 
@@ -31,10 +31,6 @@ title: David Denton
     h1,h2,h3,h4,h5,h6 {
         line-height: 1.6;
         color: #ffffff;
-    }
-
-    hero {
-        height: 1000px;
     }
 
     img.logo {
@@ -57,19 +53,18 @@ title: David Denton
 
     footer {
         margin: 0 0 0 0;
-
         color: inherit;
     }
 </style>
-<div class="hero text-center">
+<div class="hero-div text-center">
     <img class="logo" src="/assets/img/logo_white.png" alt="logo"/>
     <h1>David Denton</h1>
     <h2>Engineering Lead // Open Source // Kotlin GDE</h2>
     <h2><a href="">Training</a> | <a href="">Speaking</a> | <a href="">Consulting</a></h2>
     <br/>
         {%- for link in site.navbar-links -%}
-    <span style="padding: 20px">
+            <span style="padding: 20px">
                 <a href="{{ link[1] | relative_url }}"><img class="hero-link"  src="/assets/img/{{ link[0] }}_icon.png" alt="{{ link[0] }}"/></a>
-    </span>
+            </span>
         {%- endfor -%}
 </div>
