@@ -1010,6 +1010,7 @@ h2, h3, h4, h5, h6 {
   color: #1f5585;
 }
 
-.hero-link:hover .post-title:hover {
-    opacity:0.5;
+.dim-link:hover, .post-title:hover {
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in-out;
 }
