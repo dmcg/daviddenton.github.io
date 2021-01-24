@@ -14,10 +14,12 @@ title: David Denton
         min-height: 100%;
         height: 100%;
         max-height: 100%;
+
+        background-color: {{ site.navbar-col }};
     }
 
-    div.hero {
-        background-color: {{ site.navbar-col }};
+    div.hero-div {
+        padding: 70px;
     }
 
     h1 {
@@ -33,18 +35,13 @@ title: David Denton
         color: #ffffff;
     }
 
-    hero {
-        height: 1000px;
-    }
-
     img.logo {
         width: 20%;
-        padding: 30px;
     }
 
-    img.hero-link {
+    img.dim-link {
         width: 75px;
-        padding-bottom: 100px;
+        padding-bottom: 30px;
     }
 
     a {
@@ -52,24 +49,24 @@ title: David Denton
     }
 
     a:hover {
+        color: #ffffff;
         text-decoration: none;
     }
 
     footer {
         margin: 0 0 0 0;
-
         color: inherit;
     }
 </style>
-<div class="hero text-center">
+<div class="hero-div text-center">
     <img class="logo" src="/assets/img/logo_white.png" alt="logo"/>
     <h1>David Denton</h1>
-    <h2>Engineering Lead // Open Source // Kotlin GDE</h2>
-    <h2><a href="">Training</a> | <a href="">Speaking</a> | <a href="">Consulting</a></h2>
+    <h2>Engineering Lead // Kotlin GDE // Open Source</h2>
+    <h2><a class="dim-link" href="">Training</a> | <a class="dim-link" href="">Speaking</a> | <a class="dim-link" href="">Consulting</a></h2>
     <br/>
         {%- for link in site.navbar-links -%}
-    <span style="padding: 20px">
-                <a href="{{ link[1] | relative_url }}"><img class="hero-link"  src="/assets/img/{{ link[0] }}_icon.png" alt="{{ link[0] }}"/></a>
-    </span>
+            <span style="padding: 20px">
+                <a href="{{ link[1] | relative_url }}"><img class="dim-link" src="/assets/img/{{ link[0] }}_icon.png" alt="{{ link[0] }}"/></a>
+            </span>
         {%- endfor -%}
 </div>

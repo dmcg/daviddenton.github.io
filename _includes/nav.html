@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-xl navbar-light fixed-top navbar-custom {% if page.nav-short %}top-nav-short-permanent{% else %}top-nav-regular{% endif %}">
 
   {%- if site.title-img -%}
-    <a class="navbar-brand navbar-brand-logo" href="{{ '' | absolute_url }}"><img alt="{{ site.title }} Logo" src="{{ site.title-img | relative_url}}"/></a>
+    <a class="navbar-brand navbar-brand-logo" href="{{ '' | absolute_url }}"><img class="dim-link" alt="{{ site.title }} Logo" src="{{ site.title-img | relative_url}}"/></a>
   {%- elsif site.title -%}
     <a class="navbar-brand" href="{{ '' | absolute_url }}">{{ site.title }}</a>
   {%- endif -%}
@@ -26,7 +26,7 @@
           </li>
         {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ link[1] | relative_url }}"><img width="30px" src="/assets/img/{{ link[0] }}_icon.png" alt="{{ link[0] }}"/></a>
+            <a class="nav-link" href="{{ link[1] | relative_url }}"><img class="dim-link" width="30px" src="/assets/img/{{ link[0] }}_icon.png" alt="{{ link[0] }}"/></a>
           </li>
         {%- endif -%}
       {%- endfor -%}
