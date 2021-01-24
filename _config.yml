@@ -6,12 +6,12 @@ author: David Denton
 
 navbar-links:
   blog: /blog
-  mail: mailto://hello@dentondav.id
-  linkedin: https://dentondav.id/linkedin
   github: https://dentondav.id/github
+  linkedin: https://dentondav.id/linkedin
+  youtube: https://dentondav.id/youtube
   calendly: https://dentondav.id/calendly
   zoom: https://dentondav.id/zoom
-  youtube: https://dentondav.id/youtube
+  mail: mailto://hello@dentondav.id
 
 avatar: "/assets/img/avatar-icon.png"
 
@@ -27,7 +27,7 @@ social-network-links:
   youtube: channel/UCP2W6By4DfYjKvsN245OocQ
   linkedin: denton-david
 
-rss-description: Into the void. Musings of a Polyglot // Open Source // Trainer // Speaker // Kotlin GDE
+rss-description: Musings of a Polyglot // Open Source // Trainer // Speaker // Kotlin GDE
 
 share-links-active:
   github: false
