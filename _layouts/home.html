@@ -44,8 +44,8 @@ title: David Denton
         padding-bottom: 30px;
     }
 
-    a.dim-link {
-        padding: 0px 15px 0px 15px;
+    .spaced {
+        padding: 0 15px 0 15px;
     }
 
     a {
@@ -65,19 +65,19 @@ title: David Denton
 <div class="hero-div text-center">
     <img class="logo" src="/assets/img/logo_white.png" alt="logo"/>
     <h1>David Denton</h1>
-    <h2>Engineering Lead&nbsp;&nbsp;//&nbsp;&nbsp;Kotlin GDE&nbsp;&nbsp;//&nbsp;&nbsp;Open Source</h2>
+    <h2>Engineering Lead<span class="spaced">//</span>Kotlin GDE<span class="spaced">//</span>Open Source</h2>
     <h2>
-        <a class="dim-link" href="/writing">Writing</a>
+        <a class="dim-link spaced" href="/writing">Writing</a>
         |
-        <a class="dim-link" href="/consulting">Consulting</a>
+        <a class="dim-link spaced" href="/consulting">Consulting</a>
         |
-        <a class="dim-link" href="/training">Training</a>
+        <a class="dim-link spaced" href="/training">Training</a>
         |
-        <a class="dim-link" href="/speaking">Speaking</a>
+        <a class="dim-link spaced" href="/speaking">Speaking</a>
     </h2>
     <br/>
         {%- for link in site.social-network-links -%}
-            <span style="padding: 20px">
+            <span class="spaced">
                 <a href="{{ link[1] | relative_url }}"><img class="dim-link" src="/assets/img/{{ link[0] }}_icon.png" alt="{{ link[0] }}"/></a>
             </span>
         {%- endfor -%}
