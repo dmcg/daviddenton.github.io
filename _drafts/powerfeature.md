@@ -1,11 +1,11 @@
 ---
-layout: post title: "Kotlin Companion Objects: Shiny new entries for our API toy-box"
-tags: [kotlin, fp, design]
-comments: false thumbnail: assets/img/outklassed.jpg
+layout: post 
+title: "Companion Objects: Kotlin's unexpected power feature"
+tags: [kotlin, design]
+comments: false thumbnail: assets/img/powerfeature.jpg
 ---
 
-Exploring the different types of superpower which are afforded to us by Kotlin's companion objects, and how we can use them in
-unusual ways to design our APIs.
+In which we explore the different types of superpower which are afforded to us by Kotlin's companion objects, and how we can use them in unusual ways to design our APIs.
 
 <a title="Photo by PIXNIO @ https://pixnio.com/objects/toys/giant-robot-exhibition"><img width="512" alt="Dog.in.sleep" src="../../../assets/img/toys.jpg"></a>
 
