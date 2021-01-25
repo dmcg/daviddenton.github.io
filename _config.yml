@@ -6,15 +6,9 @@ author: David Denton
 
 navbar-links:
   writing: /writing
-
-home-links:
-  github: https://dentondav.id/github
-  linkedin: https://dentondav.id/linkedin
-  youtube: https://dentondav.id/youtube
-  speakerdeck: https://dentondav.id/speakerdeck
-  calendly: https://dentondav.id/calendly
-  zoom: https://dentondav.id/zoom
-  mail: mailto://hello@dentondav.id
+  consulting: /consulting
+  training: /training
+  speaking: /speaking
 
 avatar: "/assets/img/avatar-icon.png"
 
@@ -26,9 +20,14 @@ round-avatar: true
 title-img: /assets/img/logo_white.png
 
 social-network-links:
-  github: daviddenton
-  youtube: channel/UCP2W6By4DfYjKvsN245OocQ
-  linkedin: denton-david
+  feed: /feed.xml
+  github: https://dentondav.id/github
+  linkedin: https://dentondav.id/linkedin
+  youtube: https://dentondav.id/youtube
+  speakerdeck: https://dentondav.id/speakerdeck
+  calendly: https://dentondav.id/calendly
+  zoom: https://dentondav.id/zoom
+  mail: mailto://hello@dentondav.id
 
 rss-description: Musings on building software and Open Source
 
