@@ -1,11 +1,11 @@
 ---
 layout: post 
-title: "Companion Objects: Kotlin's unexpected power feature"
+title: "Companion Objects: Kotlin's most unassuming power feature"
 tags: [kotlin, design]
 comments: false thumbnail: assets/img/powerfeature.jpg
 ---
 
-In which we explore the different types of superpower which are afforded to us by Kotlin's companion objects, and how we can use them in unusual ways to design our APIs.
+In which I argue that Kotlin's Companion Objects are far from a simple replacement for Java Statics, and how we can use them in creating ways to supercharge our API design.
 
 <a title="Photo by PIXNIO @ https://pixnio.com/objects/toys/giant-robot-exhibition"><img width="512" alt="Dog.in.sleep" src="../../../assets/img/toys.jpg"></a>
 
