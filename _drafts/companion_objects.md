@@ -4,7 +4,7 @@ tags: [kotlin, fp, design]
 comments: false thumbnail: assets/img/outklassed.jpg
 ---
 
-Exploring the different types of superpower which are afforded to us by Kotlin's objects, and how we can use them in
+Exploring the different types of superpower which are afforded to us by Kotlin's companion objects, and how we can use them in
 unusual ways to design our APIs.
 
 <a title="Photo by PIXNIO @ https://pixnio.com/objects/toys/giant-robot-exhibition"><img width="512" alt="Dog.in.sleep" src="../../../assets/img/toys.jpg"></a>
@@ -13,7 +13,7 @@ unusual ways to design our APIs.
 
 ### tl;dr
 
-> **"Be aware that Kotlin's companion objects have all the "**
+> **"Companion Objects are not just places to put static state, but allow for new strategies to help organise your code or to provide reusable factory and validation features."**
 
 <hr/>
 
