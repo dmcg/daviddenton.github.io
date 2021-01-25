@@ -28,6 +28,7 @@ sourceSets {
 }
 
 dependencies {
+    implementation("dev.forkhandles:result4k:1.8.1.0")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 

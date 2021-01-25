@@ -6,7 +6,7 @@ comments: false
 thumbnail: assets/img/outklassed.jpg
 ---
 
-Exploring the different types of superpower which are afforded to us by Kotlin's companion objects, and how we can use them in unusual ways to design our APIs.
+Exploring the different types of superpower which are afforded to us by Kotlin's  objects, and how we can use them in unusual ways to design our APIs.
 
 <a title="Photo by PIXNIO @ https://pixnio.com/objects/toys/giant-robot-exhibition"><img width="512" alt="Dog.in.sleep" src="../../../assets/img/toys.jpg"></a>
 
@@ -17,6 +17,8 @@ Exploring the different types of superpower which are afforded to us by Kotlin's
 
 <hr/>
 
+```kotlin
+```
 
 Companion.object uses.article
 
