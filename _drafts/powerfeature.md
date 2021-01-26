@@ -19,6 +19,7 @@ href="https://pixabay.com/photos/power-lines-fields-sunset-twilight-532720><img 
 
 <hr/>
 
+### rta
 Of all the features that developers enthuse about in the Kotlin world, on of the ones that you hear about least is the
 humble Companion Object. On the face of it, they are merely a convenient stand-in for where you could put static state.
 But to dismiss them as such is prematurely writing them off - there are several very interesting use-cases that we have
@@ -27,7 +28,7 @@ discovered for them.
 Don't believe me? I'd be disappointed if you did. Let's dive in with some simple examples, all based around the Java's
 trusty `LocalDate` class.
 
-### Provide extension xtension points
+#### Provide extension xtension points
 
 A basic (and arguably the most boring) ability that Companion Objects give us is as extension points for growing
 collections of similarly themed functions or values. If you define a simple concept or abstraction that will be used and
@@ -57,7 +58,7 @@ val thisCentury = Validation.between(LocalDate.of(2000, 1, 1), LocalDate.of(2099
 val isTrue = thisCentury(LocalDate.of(2021, 1, 1))
 ```
 
-### Parsers/Validators
+#### Parsers/Validators
 We also can utilise the Companion Objects to provide a place to ensure correct construction of micro-types from other
 formats (these can also, as above, be external to the a base class as appropriate). In the example below we have a
 simple value wrapper for LocalDate. But we also want to be able to parse, validate and show the value correctly from our
@@ -80,12 +81,12 @@ val birth = BirthDate.parse("1976-244")
 val string = BirthDate.show(birth) // prints "1976-244"
 ```
 
-### Vary your programming model!
+#### Vary your programming model!
 One problem with the above approach is that traditional parse/require pattern blows up with an exception when an error
 occurs - standard object construction techniques don't give us a chance to apply more functional programming models such
 as Result/Either monads to our domain.
 
-In these models, we actively try to avoid Exceptions - to help us here we privatise the `BirthDate` constructor and write an extension function to capture the error into a (Result4k)[https://github.com/fork-handles/forkhandles/tree/trunk/result4k] type which we can then `map/flatMap()` over:
+In these models, we actively try to avoid Exceptions - to help us here we privatise the `BirthDate` constructor and write an extension function to capture the error into a [Result4k](https://github.com/fork-handles/forkhandles/tree/trunk/result4k) type which we can then `map/flatMap()` over:
 
 ```kotlin
 data class BirthDate private constructor(val value: LocalDate) {
@@ -102,7 +103,7 @@ val birth: Result<BirthDate, String> = BirthDate.asResult(LocalDate.of(1999, 12,
 
 If we want to plug in a different result monad (say Arrow's `Either`) or to return `null` on failure, it is trivial to add extension functions to cover these types. The companion object is giving us options...
 
-### Extract and reuse!
+#### Extract and reuse!
 What a lot of developers don't appreciate is that Companion Objects have exactly the same capabilities as any other Kotlin object - and this includes inheritance. Rewinding back to a simpler Exception-based parse example, we can extract commonality to superclasses/interfaces/delegates which can be also mixed into our Companion Object in the standard fashion. Taking this one step further, it is even possible to write extension functions to be added to our Companion Objects!
 
 Here we have extracted out a common superclass `DateValueFactory` for all "Date wrapper" classes - and each of the functions on this class are now inherited by both `OrderDate` and `DeliveryDate` (via their Companions). We have also added an extension function to all `DateValueFactory` instances to provide alternative  
@@ -126,4 +127,8 @@ val order = OrderDate.parse("2000-01-01")
 val delivery = DeliveryDate.asResult("2099-12-31")
 ```
 
+#### Fin
+Most of the patterns above are concentrated around value object construction, but these are only the ones we have thought of! Hopefully I have convinced you that Companion Objects, like a lot of the other Kotlin features, are worth scratching at below the surface to see what is possible.
 
+### ps.
+For a practical example of how the these type-creation techniques are used the real world, you can take a look at the foundational [Values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) library.
