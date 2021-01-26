@@ -63,7 +63,7 @@ val isTrue = thisCentury(LocalDate.of(2021, 1, 1))
 #### Parsers/Validators
 We also can utilise the Companion Objects to provide a place to ensure correct construction of micro-types from other
 formats (these can also, as above, be external to the a base class as appropriate). In the example below we have a
-simple value wrapper for LocalDate. But we also want to be able to parse, validate and show the value correctly from our
+simple value wrapper for `LocalDate`. But we also want to be able to parse, validate and show the value correctly from our
 strange ISO compliant format (YYYY-DDD):
 
 ```kotlin
