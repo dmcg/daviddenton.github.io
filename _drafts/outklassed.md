@@ -8,9 +8,9 @@ thumbnail: assets/img/outklassed.jpg
 
 In which I try to reason with myself about how five years of Kotlin has encouraged me to construct programs.
 
-<a title="">
-<img src="../../../assets/img/powerfeature.jpg" alt="construction"/>
-</a>
+<a title="Image by Nicole Köhler from Pixabay"
+href="https://pixabay.com/photos/power-lines-fields-sunset-twilight-532720"><img width="512" alt="Dog.in.sleep" src="
+../../../assets/img/powerfeature.jpg"></a>
 
 <hr/>
 
