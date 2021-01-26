@@ -22,7 +22,7 @@ href="https://pixabay.com/photos/power-lines-fields-sunset-twilight-532720"><img
 <hr/>
 
 ### rta
-Of all the features that developers enthuse about in the Kotlin world, on of the ones that you hear about least is the
+Of all the features that developers enthuse about in the Kotlin world, one of the ones that you hear about least is the
 humble Companion Object. On the face of it, they are merely a convenient stand-in for where you could put static state.
 But to dismiss them as such is prematurely writing them off - there are several very interesting use-cases that we have
 discovered for them.
