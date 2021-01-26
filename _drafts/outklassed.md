@@ -8,7 +8,9 @@ thumbnail: assets/img/outklassed.jpg
 
 In which I try to reason with myself about how five years of Kotlin has encouraged me to construct programs.
 
+<a title="">
 <img src="../../../assets/img/powerfeature.jpg" alt="construction"/>
+</a>
 
 <hr/>
 
