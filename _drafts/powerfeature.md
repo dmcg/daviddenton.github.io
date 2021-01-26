@@ -2,7 +2,8 @@
 layout: post 
 title: "Companion Objects: Kotlin's most unassuming power feature"
 tags: [kotlin, design]
-comments: false thumbnail: assets/img/powerfeature.jpg
+comments: false
+thumbnail: assets/img/powerfeature.jpg
 ---
 
 In which I argue the case for Kotlin's Companion Objects being the Clark Kent of language features in being deceptively
