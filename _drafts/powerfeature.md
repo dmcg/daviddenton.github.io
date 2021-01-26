@@ -1,5 +1,6 @@
 ---
-layout: post title: "Companion Objects: Kotlin's most unassuming power feature"
+layout: post 
+title: "Companion Objects: Kotlin's most unassuming power feature"
 tags: [kotlin, design]
 comments: false thumbnail: assets/img/powerfeature.jpg
 ---
