@@ -1,7 +1,10 @@
+import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result
+import dev.forkhandles.result4k.Success
 import dev.forkhandles.result4k.resultFrom
 import extensionPoint.Validation
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter.ISO_ORDINAL_DATE
 
 object extensionPoint {
     fun interface Validation : (LocalDate) -> Boolean {
@@ -17,15 +20,35 @@ object extensionPoint {
     val isTrue = thisCentury(LocalDate.of(2021, 1, 1))
 }
 
-// validation (vary result type)
-inline class BirthDate /* private constructor */(val value: LocalDate) {
-    companion object {
-        fun asResult(unchecked: LocalDate): Result<BirthDate, Exception>? =
-            resultFrom { BirthDate(unchecked.takeIf { it.isBefore(LocalDate.now()) }!!) }
+object Parser {
+    data class BirthDate(val value: LocalDate) {
+        init {
+            require(value.isBefore(LocalDate.now()))
+        }
+
+        companion object {
+            private val format = ISO_ORDINAL_DATE
+            fun parse(unchecked: String): BirthDate = BirthDate(LocalDate.parse(unchecked, format))
+            fun show(date: BirthDate): String = format.format(date.value)
+        }
     }
+
+    val birth = BirthDate.parse("1976-244")
+    val string = BirthDate.show(birth)
 }
 
-val birth = BirthDate.asResult(LocalDate.of(1999, 12, 31))
+object varyResult {
+    data class BirthDate private constructor(val value: LocalDate) {
+        companion object {
+            fun asResult(unchecked: LocalDate) = when {
+                unchecked.isBefore(LocalDate.now()) -> Success(BirthDate(unchecked))
+                else -> Failure("illegal date!")
+            }
+        }
+    }
+
+    val birth: Result<BirthDate, String> = BirthDate.asResult(LocalDate.of(1999, 12, 31))
+}
 
 object factories {
     class BirthDate(val value: LocalDate) {
@@ -50,6 +73,8 @@ object extending {
         companion object : DateValueFactory<DeliveryDate>(::DeliveryDate)
     }
 
+    fun <T> DateValueFactory<T>.asResult(unchecked: String) = resultFrom { parse(unchecked) }
+
     val order = OrderDate.parse("2000-01-01")
-    val delivery = DeliveryDate.parse("2099-12-31")
+    val delivery = DeliveryDate.asResult("2099-12-31")
 }
