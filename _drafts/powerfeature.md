@@ -30,7 +30,9 @@ discovered for them.
 Don't believe me? I'd be disappointed if you did 😉. Let's dive in with some simple examples, all based around the Java's
 trusty `LocalDate` class.
 
-#### Provide extension points
+#### Builders ?
+
+#### extension points
 
 A basic (and arguably the most boring) ability that Companion Objects give us is as extension points for growing
 collections of similarly themed functions or values. If you define a simple concept or abstraction that will be used and
