@@ -1,3 +1,4 @@
+import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
@@ -13,20 +14,32 @@ import org.http4k.routing.routes
 import org.http4k.server.Netty
 import org.http4k.server.asServer
 
-fun MySecureApp(): HttpHandler =
-    BearerAuth("")
-        .then(
-            routes(
-                echo(),
-                reverse()
+object before {
+    fun MySecureApp(): HttpHandler =
+        BearerAuth("")
+            .then(
+                routes(
+                    echo(),
+                    health()
+                )
             )
-        )
 
-fun echo() = "/echo" bind POST to { req: Request -> Response(OK).body(req.bodyString()) }
+    fun echo() = "/echo" bind POST to { req: Request -> Response(OK).body(req.bodyString()) }
 
-fun reverse() = "/echo" bind POST to { req: Request -> Response(OK).body(req.bodyString().reversed()) }
+    fun health() = "/health" bind GET to { req: Request -> Response(OK).body("alive!") }
 
-val server = MySecureApp().asServer(Netty(8080)).start()
+    val server = MySecureApp().asServer(Netty(8080)).start()
+
+    class GitHubApi(client: HttpHandler) {
+        private val http = SetBaseUriFrom(Uri.of("https://api.github.com"))
+            .then(SetHeader("Accept", "application/vnd.github.v3+json"))
+            .then(client)
+
+        fun getUser(username: String) = UserDetails(http(Request(GET, "/users/$username")).bodyString())
+
+        fun getRepo(owner: String, repo: String): Repo = Repo(http(Request(GET, "/repos/$owner/$repo\"")).bodyString())
+    }
+}
 
 // interface
 interface Action<R> {
@@ -51,12 +64,24 @@ data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
 
 data class UserDetails(val userJson: String)
 
+data class GetRepo(val owner: String, val repo: String) : GitHubApiAction<Repo> {
+    override fun toRequest() = Request(GET, "/repos/$owner/$repo")
+    override fun fromResponse(response: Response) = Repo(response.bodyString())
+}
+
+data class Repo(val repoJson: String)
+
 // adapter
 fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
-    private val http = SetBaseUriFrom(Uri.of("https://api.github.com")).then(client)
+    private val http = SetBaseUriFrom(Uri.of("https://api.github.com"))
+        .then(SetHeader("Accept", "application/vnd.github.v3+json"))
+        .then(client)
 
     override fun <R : Any> invoke(action: GitHubApiAction<R>) = action.fromResponse(http(action.toRequest()))
 }
 
 // extension function - nicer API
 fun GitHubApi.getUser(username: String) = GetUser(username)
+
+
+fun SetHeader(name: String, value: String): Filter = TODO()
