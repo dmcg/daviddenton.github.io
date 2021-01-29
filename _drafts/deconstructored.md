@@ -1,9 +1,9 @@
 ---
 layout: post 
-title: "Outklassed: How Kotlin taught me to rethink application design"
+title: "Deconstructored: How Kotlin taught me to rethink application design"
 tags: [kotlin, fp, design]
 comments: false
-thumbnail: assets/img/outklassed.jpg
+thumbnail: assets/img/deconstructored.jpg
 ---
 
 In which I try to reason with myself about how five years of Kotlin has encouraged me to construct programs.
