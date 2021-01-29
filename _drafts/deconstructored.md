@@ -114,6 +114,8 @@ Regardless, in my day-to-day and Open Source work, I'm now applying the rules of
 - Use interfaces to represent collections of one or more functions closing over common parameters.
 - Representing data is still almost always as value type or data classes, with maybe the odd sealed hierarchy thrown in.
 
+<hr/>
+
 ### ps.
 In some ways, I rationalise this approach as an extension to the rule of "Composition over Inheritance" - we are trying to simplify and minimise the number of top-level visible class identities in our system.
 

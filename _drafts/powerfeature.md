@@ -129,8 +129,12 @@ val order = OrderDate.parse("2000-01-01")
 val delivery = DeliveryDate.asResult("2099-12-31")
 ```
 
+<hr/>
+
 ### summary
 Although most of the patterns above are concentrated around value object construction, these are only the ones we have thought of - there are bound to be a bunch more just waiting to be discovered. This process has reinforced in my development work that we should be scratching beneath the surface in Kotlin features to see what it possible. As with a lot of inventions, it's possible that even JetBrains didn't really appreciate the depth which would be unlocked by adding such a humble feature - I'd be fascinated to learn of any of these types of uses in the Kotlin standard libraries.
+
+<hr/>
 
 ### ps.
 For a practical example of how the these type-creation techniques are used the real world, you can take a look at the foundational [Values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) library, which uses them to provide instantiation, validation, parsing and printing of value types.
