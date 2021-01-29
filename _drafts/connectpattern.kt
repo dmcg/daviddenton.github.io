@@ -12,7 +12,7 @@ interface Action<R> {
     fun fromResponse(response: Response): R
 }
 
-// inteface
+// interface
 interface GitHubApiAction<R> : Action<R>
 
 interface GitHubApi {
