@@ -75,7 +75,7 @@ val user: UserDetails = gitHub.getUser("octocat")
 
 This is all quite sensible - there is a shared HTTP client which is configured to send requests to the API with the correct `Accept` header. Unfortunately though, as our usage of the API grows, so will the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual) functions, all of which generally provide singular access to a single API call. We end up with a monolith object which can be thousands of lines long if left unchecked.
 
-As there is generally no interaction between these functions - it would be desirable to structure the code in a similar way to how we structured our incoming API - in a modular, easily testable and reusable fashion. Even so, we also want to find a way to build functions which combine one or more calls to the API.
+As there is generally no interaction between these functions - it would be desirable to structure the code in a similar way to how we structured our inbound API - in a modular, easily testable and reusable fashion. Even so, we also want to find a way to build functions which combine one or more calls to the API.
 
 #### Introducing the Connect pattern
 This is where the Connect pattern will help us. In essence, the pattern allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. That's quite a lot to take in, so let's split it down and take a look by reimplementing the example above.
