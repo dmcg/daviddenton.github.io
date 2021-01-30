@@ -49,7 +49,7 @@ In this case, the splitting up of the server-side API into separate functions al
 application as a whole and also to be able to easily test the various endpoints in the application independently of
 the rest - e.g. we don't need to provide a Bearer token to access our API calls if we have access to directly test `echo()` and `health()`.
 
-Additionally, because we have modularised the code in this way, it is also reusable in other contexts - we can put common endpoint code such as `health()` into a shared location and use them across our fleet of microservices.
+Additionally, because we have modularised the code in this way, it is also reusable in other contexts - we can put common endpoint code such as `health()` into a shared location and reuse them across our fleet of microservices.
 
 #### Structuring our outgoing APIs
 When it comes to part 4 of the list above - adapter code for other remote APIs - we don't generally have a pattern in place to use the same structure. HTTP adapters to remote systems are usually constructed as monolithic interfaces with many methods, all built around a singularly configured HTTP adapter. Let's say we want to talk to the GitHub API, we would normally build an API adapter like so:
