@@ -47,7 +47,7 @@ val server = MySecureApp().asServer(Netty(8080)).start()
 
 In this case, the splitting up of the server-side API into separate functions allows us to maintain a decent grip on our
 application as a whole and also to be able to easily test the various endpoints in the application independently of
-the rest - e.g. we don't need to provide a `Bearer` token to access our API calls if we have access to directly test `echo()` and `health()`.
+the rest - e.g. we don't need to provide a Bearer token to access our API calls if we have access to directly test `echo()` and `health()`.
 
 Additionally, because we have modularised the code in this way, it is also reusable in other contexts - we can put common endpoint code such as `health()` into a shared location and use them across our fleet of microservices.
 
