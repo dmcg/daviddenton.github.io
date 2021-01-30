@@ -1,4 +1,3 @@
-import org.http4k.client.JavaHttpClient
 import org.http4k.client.OkHttp
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
@@ -46,7 +45,9 @@ object before {
         )
     }
 
-    val github: GitHubApi = GitHubApi(OkHttp())
+    val gitHub: GitHubApi = GitHubApi(OkHttp())
+
+    val user: UserDetails = gitHub.getUser("octocat")
 }
 
 // interface
@@ -85,7 +86,7 @@ fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
     override fun <R : Any> invoke(action: GitHubApiAction<R>) = action.fromResponse(http(action.toRequest()))
 }
 
-val github: GitHubApi = GitHubApi.Http(OkHttp())
+val gitHub: GitHubApi = GitHubApi.Http(OkHttp())
 
 // extension function - nicer API
 fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
@@ -96,5 +97,6 @@ fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(
 //    return getUser(commit.author)
 //}
 
+//val latestUser: UserDetails = gitHub.getLatestUser("http4k", "http4k-connect")
 
 fun SetHeader(name: String, value: String): Filter = TODO()

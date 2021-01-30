@@ -69,7 +69,8 @@ class GitHubApi(client: HttpHandler) {
     )
 }
 
-val github: GitHubApi = GitHubApi(OkHttp())
+val gitHub: GitHubApi = GitHubApi(OkHttp())
+val user: UserDetails = gitHub.getUser("octocat")
 ```
 
 This is all quite sensible - there is a shared HTTP client which is configured to send requests to the API with the correct `Accept` header. Unfortunately though, as our usage of the API grows, so will the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual) functions, all of which generally provide singular access to a single API call. We end up with a monolith object which can be thousands of lines long if left unchecked.
@@ -77,7 +78,7 @@ This is all quite sensible - there is a shared HTTP client which is configured t
 As there is generally no interaction between these functions - it would be desirable to structure the code in a similar way to how we structured our incoming API - in a modular, easily testable and reusable fashion. Even so, we also want to find a way to build functions which combine one or more calls to the API.
 
 #### Introducing the Connect pattern
-This is where the Connect pattern will help us. In essence, the pattern allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. That's quite a lot to take in, so let's split it down and take a look.
+This is where the Connect pattern will help us. In essence, the pattern allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. That's quite a lot to take in, so let's split it down and take a look by reimplementing the example above.
 
 The pattern itself has been created around the facilities available in the Kotlin language - most notably the use of interfaces and extension functions. Other languages may not have these exact same facilities, but the pattern should be adaptable (to greater or lesser effect).
 
@@ -86,7 +87,7 @@ The following explanation is based upon a simplified version of the [http4k-conn
 #### Action
 The fundamental unit of work in the Connect pattern is the `Action` interface, which represents a single interaction with the remote system, generified by the type of the return object `R`. Each action contains the state of the data that needs to be transmitted, and also how to marshall the data within the action to and from the underlying HTTP API. 
 
-For our GitHubApi adapter, we create the superinterface and an implementation of an action to get a user from the API. Note that the Action and result type `R` are modelled as Kotlin data classes. This will give us advantages which we will cover later:
+For our GitHubApi adapter, we create the superinterface and an implementation of an action to get a user from the API. Note that the Action and result type `R` are modelled as Kotlin data classes - this will give us advantages which we will cover later:
 ```kotlin
 interface GitHubApiAction<R> {
     fun toRequest(): Request
@@ -102,7 +103,7 @@ data class UserDetails(val userJson: String)
 ```
 
 #### Adapter
-The Adapter interface represents the common base protocol for interacting with the remote API - it will deal with server endpoints, authorisation and other headers, and perform the actual HTTP interactions. Each Adapter is modelled as a simple interface with a single generic method accepting the generic Action type.
+The Adapter interface represents the common base protocol for interacting with the remote API - it will deal with server host location, authorisation and other headers, and perform the actual HTTP interactions. Each Adapter is modelled as a simple interface with a single generic method accepting the generic Action type.
 
 Note here the presence of the Kotlin `companion object` - it is there to give us a point to hook other code onto to make our life easier for the API user.
 
@@ -114,7 +115,7 @@ interface GitHubApi {
 }
 ```
 
-Our first usage of the companion
+Our first usage of the companion object is to rewrite our previous version an anonymous implementation of the `GitHubApi` and attach it to our Adapter, returned by a factory function. All dependencies required by the Adapter are passed in here and closed over. Note that we explicitly pass in the HTTP client instead of constructing it inside the function  - access to this is critical if we want to be able to decorate the client Adapter with call logging or other operational concerns:
 
 ```kotlin
 fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
@@ -124,24 +125,42 @@ fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
 
     override fun <R : Any> invoke(action: GitHubApiAction<R>) = action.fromResponse(http(action.toRequest()))
 }
-
-val github: GitHubApi = GitHubApi.Http(OkHttp())
 ```
+
+#### Using the adapter
+Apart from the usage of the Companion Object as a hook, construction of our Adapter looks similar to the previous version - we have not exposed any more types (there is still just `GitHubAPI`). However, calling the API does look different - because of the operator function `invoke()`, we now treat the Server as a simple function which takes Action instances:
+
+```kotlin
+val gitHub: GitHubApi = GitHubApi.Http(OkHttp())
+
+val user: UserDetails = gitHub(GetUser("octocat"))
+```
+
+This change may leave a slight bad taste in the mouth as the API is no longer as IDE discoverable. Luckily, Kotlin has another trick up it's sleeve here which will help us...
 
 #### Extension Methods
+We can get back our old API very simply by creating another extension function for each Action that mimics the signature of the Action itself and delegates to the `invoke()` call in the client:
+
 ```kotlin
 fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
-```
-
-#### Composite Actions
-```kotlin
 fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(GetRepoLatestCommit(owner, repo))
 
+val user: UserDetails = gitHub.getUser("octocat")
+```
+
+Even better, for actions which consist more than one API call such as `getLatestUserForCommit()` below, we can just create more extension functions which delegate down to the individual actions. These functions can be added to the Adapter at the global level, or just in the contexts or modules which make sense. The extension functions allow us to compose our own custom adapter out of the individual Action parts:
+
+```kotlin
 fun GitHubApi.getLatestUser(org: String, repo: String) {
     val commit = getLatestRepoCommit(org, repo)
     return getUser(commit.author)
 }
+
+val latestUser: UserDetails = gitHub.getLatestUser("http4k", "http4k-connect")
 ```
+
+### Testing the Connect pattern
+
 
 <hr/>
 
