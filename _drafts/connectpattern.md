@@ -80,7 +80,7 @@ As there is generally no interaction between these functions - it would be desir
 #### Introducing the Connect pattern
 This is where the Connect pattern will help us. In essence, Connect allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. 
 
-The pattern itself has been created around the facilities available in the Kotlin language - most notably the use of interfaces and extension functions. Other languages may not have these exact same facilities, but Connect should be adaptable (to greater or lesser effect). Let's split it down and take a look by reimplementing the example above.
+The pattern itself has been created around the features available in the Kotlin language - most notably the use of interfaces and extension functions. Other languages may not have these exact same facilities, but Connect should be adaptable (to greater or lesser effect). Let's split it down and take a look by reimplementing the example above.
 
 The following explanation is based upon a simplified version of the [http4k-connect](https://github.com/http4k/http4k-connect) library, which we're using as the canonical implementation of the pattern. As the name implies, http4k-connect is itself built upon the [http4k](https://http4k.org) HTTP toolkit for it's core HTTP abstractions, although there is nothing in the pattern to tie it to this library (or even to the HTTP protocol).
 
