@@ -82,7 +82,7 @@ This is where the Connect pattern will help us. In essence, the pattern allows t
 
 The pattern itself has been created around the facilities available in the Kotlin language - most notably the use of interfaces and extension functions. Other languages may not have these exact same facilities, but the pattern should be adaptable (to greater or lesser effect).
 
-The following explanation is based upon a simplified version of the [http4k-connect](https://github.com/http4k/http4k-connect) library, which we're using as the canonical implementation of the pattern. As the name implies, http4k-connect is itself built upon the (http4k)[https://http4k.org] HTTP toolkit for it's core HTTP abstractions, although there is nothing in the pattern to tie it to this library (or even to the HTTP protocol).
+The following explanation is based upon a simplified version of the [http4k-connect](https://github.com/http4k/http4k-connect) library, which we're using as the canonical implementation of the pattern. As the name implies, http4k-connect is itself built upon the [http4k](https://http4k.org) HTTP toolkit for it's core HTTP abstractions, although there is nothing in the pattern to tie it to this library (or even to the HTTP protocol).
 
 #### Action
 The fundamental unit of work in the Connect pattern is the `Action` interface, which represents a single interaction with the remote system, generified by the type of the return object `R`. Each action contains the state of the data that needs to be transmitted, and also how to marshall the data within the action to and from the underlying HTTP API. 
