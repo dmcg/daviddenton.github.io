@@ -28,7 +28,7 @@ import java.rmi.RemoteException
 
 object before {
     fun MySecureApp(): HttpHandler =
-        BearerAuth("")
+        BearerAuth("my-very-secure-and-secret-bearer-token")
             .then(
                 routes(
                     echo(),

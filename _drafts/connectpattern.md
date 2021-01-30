@@ -30,7 +30,7 @@ For 1 above - the Server-side, we tend to model the application as a set of sepa
 
 ```kotlin
 fun MySecureApp(): HttpHandler =
-    BearerAuth("")
+    BearerAuth("my-very-secure-and-secret-bearer-token")
         .then(
             routes(
                 echo(),
