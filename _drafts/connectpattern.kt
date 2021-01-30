@@ -3,7 +3,6 @@ import com.natpryce.hamkrest.equalTo
 import dev.forkhandles.result4k.Failure
 import dev.forkhandles.result4k.Result
 import dev.forkhandles.result4k.Success
-import dev.forkhandles.result4k.resultFrom
 import io.mockk.every
 import io.mockk.mockk
 import org.http4k.client.OkHttp
@@ -23,8 +22,6 @@ import org.http4k.routing.routes
 import org.http4k.server.Netty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.Test
-import java.lang.RuntimeException
-import java.rmi.RemoteException
 
 object before {
     fun MySecureApp(): HttpHandler =
@@ -68,7 +65,7 @@ interface Action<R> {
 }
 
 // interface
-interface GitHubApiAction<R>: Action<R>
+interface GitHubApiAction<R> : Action<R>
 
 interface GitHubApi {
     operator fun <R : Any> invoke(action: GitHubApiAction<R>): R
@@ -122,10 +119,18 @@ fun `get user details`() {
     assertThat(githubApi.getUser("anything"), equalTo(userDetails))
 }
 
+class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
+    val recorded = mutableListOf<GitHubApiAction<*>>()
+    override fun <R : Any> invoke(action: GitHubApiAction<R>): R {
+        recorded += action
+        return delegate(action)
+    }
+}
+
 fun SetHeader(name: String, value: String): Filter = TODO()
 
 object result4k {
-    interface GitHubApiAction<R>: Action<Result<R, Exception>>
+    interface GitHubApiAction<R> : Action<Result<R, Exception>>
 
     data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
         override fun toRequest() = Request(GET, "/users/$username")

@@ -175,6 +175,17 @@ fun `get user details`() {
 }
 ```
 
+The Action object being a single instance also gives us the ability to easily decorate our Adapter instance for testing or other purposes, for instance we can record all of the incoming calls:
+```kotlin
+class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
+    val recorded = mutableListOf<GitHubApiAction<*>>()
+    override fun <R : Any> invoke(action: GitHubApiAction<R>): R {
+        recorded += action
+        return delegate(action)
+    }
+}
+```
+
 #### Varying the programming model
 Depending on the style of project being used, there are several different popular programming models which are commonly found out in the wild, and this will affect the value of the `R` type implemented for the Action classes. 
 
