@@ -8,7 +8,7 @@ In which I describe a pattern for writing third party adapters in a modular and 
 original enough for me to christen it.
 
 <a title="Image by Steve Buissinne from Pixabay"
-href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="connect patterm" src="
+href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="smash egg" src="
 ../../../assets/img/connectpattern.jpg"></a>
 
 > **"Breaking down remote adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be manageable at the code layer, but also simplifies both testing and extensibility."**
