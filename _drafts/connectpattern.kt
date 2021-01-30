@@ -1,3 +1,5 @@
+import org.http4k.client.JavaHttpClient
+import org.http4k.client.OkHttp
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
@@ -37,8 +39,14 @@ object before {
 
         fun getUser(username: String) = UserDetails(http(Request(GET, "/users/$username")).bodyString())
 
-        fun getRepo(owner: String, repo: String): Repo = Repo(http(Request(GET, "/repos/$owner/$repo\"")).bodyString())
+        fun getRepoLatestCommit(owner: String, repo: String): Commit = Commit(
+            http(
+                Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
+            ).bodyString()
+        )
     }
+
+    val github: GitHubApi = GitHubApi(OkHttp())
 }
 
 // interface
@@ -77,14 +85,16 @@ fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
     override fun <R : Any> invoke(action: GitHubApiAction<R>) = action.fromResponse(http(action.toRequest()))
 }
 
+val github: GitHubApi = GitHubApi.Http(OkHttp())
+
 // extension function - nicer API
 fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
 fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(GetRepoLatestCommit(owner, repo))
 
-fun GitHubApi.getLatestUser(org: String, repo: String) {
-    val commit = getLatestRepoCommit(org, repo)
-    return getUser(commit.author)
-}
+//fun GitHubApi.getLatestUser(org: String, repo: String) {
+//    val commit = getLatestRepoCommit(org, repo)
+//    return getUser(commit.author)
+//}
 
 
 fun SetHeader(name: String, value: String): Filter = TODO()

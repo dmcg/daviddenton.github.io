@@ -62,8 +62,14 @@ class GitHubApi(client: HttpHandler) {
 
     fun getUser(username: String) = UserDetails(http(Request(GET, "/users/$username")).bodyString())
 
-    fun getRepo(owner: String, repo: String): Repo = Repo(http(Request(GET, "/repos/$owner/$repo\"")).bodyString())
+    fun getRepoLatestCommit(owner: String, repo: String): Commit = Commit(
+        http(
+            Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
+        ).bodyString()
+    )
 }
+
+val github: GitHubApi = GitHubApi(OkHttp())
 ```
 
 This is all quite sensible - there is a shared HTTP client which is configured to send requests to the API with the correct `Accept` header. Unfortunately though, as our usage of the API grows, so will the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual) functions, all of which generally provide singular access to a single API call. We end up with a monolith object which can be thousands of lines long if left unchecked.
@@ -75,12 +81,12 @@ This is where the Connect pattern will help us. In essence, the pattern allows t
 
 The pattern itself has been created around the facilities available in the Kotlin language - most notably the use of interfaces and extension functions. Other languages may not have these exact same facilities, but the pattern should be adaptable (to greater or lesser effect).
 
-The following explanation is based upon a simplified version of the [http4k-connect](https://github.com/http4k/http4k-connect) library, which we're using as the canonical implementation of the pattern. As the name implies, http4k-connect is itself built upon the (http4k)[https://http4k.org] HTTP toolkit, although there is nothing in the pattern to tie it to this 
+The following explanation is based upon a simplified version of the [http4k-connect](https://github.com/http4k/http4k-connect) library, which we're using as the canonical implementation of the pattern. As the name implies, http4k-connect is itself built upon the (http4k)[https://http4k.org] HTTP toolkit for it's core HTTP abstractions, although there is nothing in the pattern to tie it to this library (or even to the HTTP protocol).
 
 #### Action
 The fundamental unit of work in the Connect pattern is the `Action` interface, which represents a single interaction with the remote system, generified by the type of the return object `R`. Each action contains the state of the data that needs to be transmitted, and also how to marshall the data within the action to and from the underlying HTTP API. 
 
-For our GitHubApi adapter, we create the superinterface and an implementation of an action to get a user from the API. Note that the Action and result `R` types are modelled as Kotlin data classes. This will give us advantages which we will cover later:
+For our GitHubApi adapter, we create the superinterface and an implementation of an action to get a user from the API. Note that the Action and result type `R` are modelled as Kotlin data classes. This will give us advantages which we will cover later:
 ```kotlin
 interface GitHubApiAction<R> {
     fun toRequest(): Request
@@ -96,13 +102,21 @@ data class UserDetails(val userJson: String)
 ```
 
 #### Adapter
+The Adapter interface represents the common base protocol for interacting with the remote API - it will deal with server endpoints, authorisation and other headers, and perform the actual HTTP interactions. Each Adapter is modelled as a simple interface with a single generic method accepting the generic Action type.
+
+Note here the presence of the Kotlin `companion object` - it is there to give us a point to hook other code onto to make our life easier for the API user.
+
 ```kotlin
 interface GitHubApi {
     operator fun <R : Any> invoke(action: GitHubApiAction<R>): R
 
     companion object
 }
+```
 
+Our first usage of the companion
+
+```kotlin
 fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
     private val http = SetBaseUriFrom(Uri.of("https://api.github.com"))
         .then(SetHeader("Accept", "application/vnd.github.v3+json"))
@@ -110,6 +124,8 @@ fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
 
     override fun <R : Any> invoke(action: GitHubApiAction<R>) = action.fromResponse(http(action.toRequest()))
 }
+
+val github: GitHubApi = GitHubApi.Http(OkHttp())
 ```
 
 #### Extension Methods
