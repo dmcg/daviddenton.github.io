@@ -148,7 +148,7 @@ fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(
 val user: UserDetails = gitHub.getUser("octocat")
 ```
 
-Even better, for actions which consist more than one API call such as `getLatestUserForCommit()` below, we can just create more extension functions which delegate down to the individual actions. These functions can be added to `GitHubApi` instances at the global level, or just in the contexts or modules which make sense. The extension functions allow us to compose our own custom adapter out of the individual Action parts:
+Even better, for actions which consist more than one API call such as `getLatestUserForCommit()` below, we can just create more extension functions which delegate down to the individual actions. These functions can be added to `GitHubApi` instances at the global level, or just in the contexts or modules which make sense. The extension functions effectively allow us to compose our own custom `GitHubApi` Adapter out of the individual Action parts that we are interested in:
 
 ```kotlin
 fun GitHubApi.getLatestUser(org: String, repo: String) {
