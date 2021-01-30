@@ -87,7 +87,7 @@ The following explanation is based upon a simplified version of the [http4k-conn
 #### Action
 The fundamental unit of work in the Connect pattern is the `Action` interface, which represents a single interaction with the remote system, generified by the type of the return object `R`. Each action contains the state of the data that needs to be transmitted, and also how to marshall the data within the action to and from the underlying HTTP API. 
 
-For our `GitHubApi` adapter, we create the superinterface and an implementation of an action to get a user from the API. Note that the Action and result type `R` are modelled as Kotlin data classes - this will give us advantages which we will cover later:
+For our `GitHubApi` adapter, we create the superinterface and an implementation of an Action to get a user from the API along with the result type. Note that the Action and result type `R` are modelled as Kotlin data classes - this will give us advantages which we will cover later:
 ```kotlin
 interface GitHubApiAction<R> {
     fun toRequest(): Request
