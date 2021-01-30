@@ -200,5 +200,7 @@ The Connect pattern combines simple abstractions to provide a model that allows 
 Although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension methods (such as Kotlin) provide an ideal platform for implementations. In statically typed languages, sufficiently advanced Generic capabilities are the only required language feature.
 
 #### Further notes on the http4k-connect implementation
-The http4k-connect library provides 
+The Open Source [http4k-connect](https://github.com/http4k/http4k-connect) Kotlin libraries provide both the basic framework for implementing Connect pattern adapters, but also a set of pre-built API adapters for communicating with popular cloud services such as AWS. Further, http4k-connect provides a set of protocol-compatible in/out process Fakes which can be used as test-doubles for the various services, and a set of Storage backends (such as In-Memory, S3 and Redis) for test-data to be housed. 
+
+The libraries are designed to be as lightweight as possible, meaning they are a perfect use-case for Serverless deployments, They use compile-time code-generation to automatically write extension functions for each of the implemented Actions using Kapt, and ships without the need for reflection in JSON message parsing by also generating message adapters for the [Moshi](https://github.com/square/moshi) JSON framework with the [Kotshi](https://github.com/ansman/kotshi) plugin.
 
