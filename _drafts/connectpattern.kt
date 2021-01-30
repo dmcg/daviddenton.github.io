@@ -1,3 +1,8 @@
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
+import dev.forkhandles.result4k.Success
+import io.mockk.every
+import io.mockk.mockk
 import org.http4k.client.OkHttp
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
@@ -14,6 +19,7 @@ import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.server.Netty
 import org.http4k.server.asServer
+import org.junit.jupiter.api.Test
 
 object before {
     fun MySecureApp(): HttpHandler =
@@ -100,3 +106,14 @@ fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(
 //val latestUser: UserDetails = gitHub.getLatestUser("http4k", "http4k-connect")
 
 fun SetHeader(name: String, value: String): Filter = TODO()
+
+@Test
+fun `get user details`() {
+    val githubApi = mockk<GitHubApi>()
+    val userDetails = UserDetails("{}")
+    every { githubApi(any<GetUser>()) } returns userDetails
+
+    assertThat(githubApi.getUser("anything"), equalTo(userDetails))
+}
+
+
