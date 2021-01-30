@@ -66,14 +66,21 @@ class GitHubApi(client: HttpHandler) {
 }
 ```
 
-This is all quite sensible - there is a shared HTTP client which is configured to send requests to the API with the correct `Accept` header. Unfortunately though, as our usage of the API grows to encompass more and more method, so will the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual functions), all of which generally provide singular access to a single API call. We end up with a monolith object which can be thousands of lines long if left unchecked.
+This is all quite sensible - there is a shared HTTP client which is configured to send requests to the API with the correct `Accept` header. Unfortunately though, as our usage of the API grows, so will the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual) functions, all of which generally provide singular access to a single API call. We end up with a monolith object which can be thousands of lines long if left unchecked.
 
 As there is generally no interaction between these functions - it would be desirable to structure the code in a similar way to how we structured our incoming API - in a modular, easily testable and reusable fashion. Even so, we also want to find a way to build functions which combine one or more calls to the API.
 
 #### Introducing the Connect pattern
-This is where the Connect pattern will help us out. In essence, the pattern allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. Let's split it down and take a look.
+This is where the Connect pattern will help us. In essence, the pattern allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. That's quite a lot to take in, so let's split it down and take a look.
+
+The pattern itself has been created around the facilities available in the Kotlin language - most notably the use of interfaces and extension functions. Other languages may not have these exact same facilities, but the pattern should be adaptable (to greater or lesser effect).
+
+The following explanation is based upon a simplified version of the [http4k-connect](https://github.com/http4k/http4k-connect) library, which we're using as the canonical implementation of the pattern. As the name implies, http4k-connect is itself built upon the (http4k)[https://http4k.org] HTTP toolkit, although there is nothing in the pattern to tie it to this 
 
 #### Action
+The fundamental unit of work in the Connect pattern is the `Action` interface, which represents a single interaction with the remote system, generified by the type of the return object `R`. Each action contains the state of the data that needs to be transmitted, and also how to marshall the data within the action to and from the underlying HTTP API. 
+
+For our GitHubApi adapter, we create the superinterface and an implementation of an action to get a user from the API. Note that the Action and result `R` types are modelled as Kotlin data classes. This will give us advantages which we will cover later:
 ```kotlin
 interface GitHubApiAction<R> {
     fun toRequest(): Request
