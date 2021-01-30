@@ -47,7 +47,7 @@ val server = MySecureApp().asServer(Netty(8080)).start()
 
 In this case, the splitting up of the server-side API into separate functions allows us to maintain a decent grip on our
 application as a whole and also to be able to easily test the various endpoints in the application independently of
-the rest - in this case we don't need to provide a `Bearer` token to access our API calls if we have access to directly test `echo()` and `health()`.
+the rest - ie. we don't need to provide a `Bearer` token to access our API calls if we have access to directly test `echo()` and `health()`.
 
 Additionally, because we have modularised the code in this way, it is also reusable in other contexts - we can put common endpoint code such as `health()` into a shared location and use them across our fleet of microservices.
 
@@ -66,9 +66,59 @@ class GitHubApi(client: HttpHandler) {
 }
 ```
 
-This is all quite sensible, but unfortunately, as our usage of the API grows, so does the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual functions), all of which generally provide singular access to a single API call.
+This is all quite sensible - there is a shared HTTP client which is configured to send requests to the API with the correct `Accept` header. Unfortunately though, as our usage of the API grows to encompass more and more method, so will the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual functions), all of which generally provide singular access to a single API call. We end up with a monolith object which can be thousands of lines long if left unchecked.
 
-As there is no interaction between these functions - it would be desirable to structure the code in a similar way to how we structured our incoming API - in a modular, easily testable fashion.
+As there is generally no interaction between these functions - it would be desirable to structure the code in a similar way to how we structured our incoming API - in a modular, easily testable and reusable fashion. Even so, we also want to find a way to build functions which combine one or more calls to the API.
+
+#### Introducing the Connect pattern
+This is where the Connect pattern will help us out. In essence, the pattern allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. Let's split it down and take a look.
+
+#### Action
+```kotlin
+interface GitHubApiAction<R> {
+    fun toRequest(): Request
+    fun fromResponse(response: Response): R
+}
+
+data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
+    override fun toRequest() = Request(GET, "/users/$username")
+    override fun fromResponse(response: Response) = UserDetails(response.bodyString())
+}
+
+data class UserDetails(val userJson: String)
+```
+
+#### Adapter
+```kotlin
+interface GitHubApi {
+    operator fun <R : Any> invoke(action: GitHubApiAction<R>): R
+
+    companion object
+}
+
+fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
+    private val http = SetBaseUriFrom(Uri.of("https://api.github.com"))
+        .then(SetHeader("Accept", "application/vnd.github.v3+json"))
+        .then(client)
+
+    override fun <R : Any> invoke(action: GitHubApiAction<R>) = action.fromResponse(http(action.toRequest()))
+}
+```
+
+#### Extension Methods
+```kotlin
+fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
+```
+
+#### Composite Actions
+```kotlin
+fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(GetRepoLatestCommit(owner, repo))
+
+fun GitHubApi.getLatestUser(org: String, repo: String) {
+    val commit = getLatestRepoCommit(org, repo)
+    return getUser(commit.author)
+}
+```
 
 <hr/>
 

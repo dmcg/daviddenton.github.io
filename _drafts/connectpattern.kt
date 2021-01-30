@@ -42,13 +42,10 @@ object before {
 }
 
 // interface
-interface Action<R> {
+interface GitHubApiAction<R> {
     fun toRequest(): Request
     fun fromResponse(response: Response): R
 }
-
-// interface
-interface GitHubApiAction<R> : Action<R>
 
 interface GitHubApi {
     operator fun <R : Any> invoke(action: GitHubApiAction<R>): R
@@ -64,12 +61,12 @@ data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
 
 data class UserDetails(val userJson: String)
 
-data class GetRepo(val owner: String, val repo: String) : GitHubApiAction<Repo> {
-    override fun toRequest() = Request(GET, "/repos/$owner/$repo")
-    override fun fromResponse(response: Response) = Repo(response.bodyString())
+data class GetRepoLatestCommit(val owner: String, val repo: String) : GitHubApiAction<Commit> {
+    override fun toRequest() = Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
+    override fun fromResponse(response: Response) = Commit(response.bodyString())
 }
 
-data class Repo(val repoJson: String)
+data class Commit(val commitJson: String)
 
 // adapter
 fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
@@ -81,7 +78,13 @@ fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
 }
 
 // extension function - nicer API
-fun GitHubApi.getUser(username: String) = GetUser(username)
+fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
+fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(GetRepoLatestCommit(owner, repo))
+
+fun GitHubApi.getLatestUser(org: String, repo: String) {
+    val commit = getLatestRepoCommit(org, repo)
+    return getUser(commit.author)
+}
 
 
 fun SetHeader(name: String, value: String): Filter = TODO()
