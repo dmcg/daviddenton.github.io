@@ -115,7 +115,7 @@ interface GitHubApi {
 }
 ```
 
-Our first usage of the companion object is to rewrite our previous version an anonymous implementation of the `GitHubApi` and attach it to our Adapter, returned by a factory function. All dependencies required by the Adapter are passed in here and closed over. Note that we explicitly pass in the HTTP client instead of constructing it inside the function  - access to this is critical if we want to be able to decorate the client Adapter with call logging or other operational concerns:
+Our first usage of the companion object is to rewrite our previous version as an anonymous implementation of the `GitHubApi` and attach it to our Adapter, returned by a factory function. All dependencies required by the Adapter are passed in here and closed over. Note that we explicitly pass in the HTTP client instead of constructing it inside the function  - access to this is critical if we want to be able to decorate the client Adapter with call logging or other operational concerns:
 
 ```kotlin
 fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
