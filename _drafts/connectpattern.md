@@ -11,7 +11,7 @@ original enough for me to christen it.
 href="https://pixabay.com/users/stevepb-282134"><img width="512" alt="Dog.in.sleep" src="
 ../../../assets/img/connectpattern.jpg"></a>
 
-> **"Breaking down remote adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be manageable at the code layer, but also simplifies both testing and extensibility. Testing your system through the edges of the remote boundary gives you super powers."**
+> **"Breaking down remote adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be manageable at the code layer, but also simplifies both testing and extensibility."**
 
 <hr/>
 
@@ -194,15 +194,11 @@ data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
 }
 ```
 
-#### Extending the Connect pattern
-The decoupling of the Action and Adapter classes mean.. 
+### summary 
+The Connect pattern combines simple abstractions to provide a model that allows us to break down the common problem of the monolithic outbound API adapter into easily digestable parts. Although initially designed around HTTP, it will fit any request/response protocol and can easily be adapted to different programming models including Result monads and Future types. This modularity provides a a mirror image of the composability that we expect when building inbound Serverside interfaces, and this further leads to a more testable and extensible codebase.
 
+Although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension methods (such as Kotlin) provide an ideal platform for implementations. In statically typed languages, sufficiently advanced Generic capabilities are the only required language feature.
 
 #### Further notes on the http4k-connect implementation
+The http4k-connect library provides 
 
-
-<hr/>
-
-### ps.
-
-If you'd like to see an example of the Connect Pattern in
