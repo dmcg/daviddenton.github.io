@@ -187,7 +187,7 @@ class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
 ```
 
 #### Varying the programming model
-Depending on the style of team, there are several different popular programming models which are may be commonly found out in the wild, and this will affect the value of the `R` type implemented for the Action classes. 
+Depending on the style of team, there are several different popular programming models which may be commonly found out in the wild, and this will affect the value of the `R` type implemented for the Action classes. 
 
 As in our example above, traditional OO-style teams using languages which embrace the throwing of Exceptions will represent `R` as the straight result type returned by the method, but teams that adopt a more Functional Programming approach will tend towards using a more monadic return type such as Result4k's `Result`, Arrow's `Either` or `Try`, or (when it is available) Kotlin's built in `Result` type.
 
