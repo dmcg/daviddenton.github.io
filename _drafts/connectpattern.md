@@ -8,7 +8,7 @@ In which I describe a pattern for writing third party adapters in a modular and 
 original enough for me to christen it.
 
 <a title="Image by Steve Buissinne from Pixabay"
-href="https://pixabay.com/users/stevepb-282134"><img width="512" alt="Dog.in.sleep" src="
+href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="connect patterm" src="
 ../../../assets/img/connectpattern.jpg"></a>
 
 > **"Breaking down remote adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be manageable at the code layer, but also simplifies both testing and extensibility."**
@@ -211,6 +211,10 @@ The Connect pattern combines simple abstractions to provide a model that allows 
 Although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension methods (such as Kotlin) provide an ideal platform for implementations. In statically typed languages, sufficiently advanced Generic capabilities are the only required language feature.
 
 #### Further notes on the http4k-connect implementation
+<a title="http4k connect"
+href="https://github.com/http4k/http4k-connect"><img width="800" alt="http4k connect" src="
+../../../assets/img/connect.png"></a>
+
 The Open Source [http4k-connect](https://github.com/http4k/http4k-connect) Kotlin libraries provide both the basic framework for implementing Connect pattern adapters, but also a set of pre-built API adapters for communicating with popular cloud services such as AWS. Further, http4k-connect provides a set of protocol-compatible in/out process Fakes which can be used as test-doubles for the various services, and a set of Storage backends (such as In-Memory, S3 and Redis) for test-data to be housed. 
 
 The libraries are designed to be as lightweight as possible, meaning they are a perfect use-case for Serverless deployments, They use compile-time code-generation to automatically write extension functions for each of the implemented Actions using Kapt, and ships without the need for reflection in JSON message parsing by also generating message adapters for the [Moshi](https://github.com/square/moshi) JSON framework with the [Kotshi](https://github.com/ansman/kotshi) plugin.
