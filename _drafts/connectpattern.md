@@ -162,7 +162,7 @@ val latestUser: UserDetails = gitHub.getLatestUser("http4k", "http4k-connect")
 ### Testing the Connect pattern
 Both the Adapter and the modularisation of the various Action classes make it very easy to write unit tests for the action code created using the Connect pattern, but it's also important to consider how the API design will affect the testing of client code.
 
-Fortunately, the simplicity of the single arity functional Adapter interface in concert with the Actions being implemented as Kotlin Data classes (which are easily comparable) make testing as a client of Connect APIs trivial at multiple levels. Consider for instance that we are mocking a function which has seven parameters that we don't care about - in the previous implementation we would have to mock out each of those with a value (or an `any()` matcher), versus a single `any<Action>()` covering the Connect version:
+Fortunately, the simplicity of the single arity functional Adapter interface in concert with the Actions being implemented as Kotlin Data classes (which are easily comparable) make testing as a client of Connect APIs trivial at multiple levels. Consider for instance if we are intending to mock a function which has seven parameters that we don't care about - in the previous implementation we would have to mock out each of those with a value (or an `any()` matcher), versus a single `any<Action>()` covering the Connect version:
 
 ```kotlin
 @Test
