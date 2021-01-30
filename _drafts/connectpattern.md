@@ -128,7 +128,7 @@ fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
 ```
 
 #### Using the adapter
-Apart from the usage of the Companion Object as a hook, construction of our Adapter looks similar to the previous version - we have not exposed any more types (there is still just `GitHubAPI`). However, calling the API does look different - because of the operator function `invoke()`, we now treat the Server as a simple function which takes Action instances:
+Apart from the usage of the Companion Object as a hook, construction of our Adapter looks similar to the previous version - we have not exposed any more concrete types (there is still just `GitHubApi`). However, calling the API does look different - because of the operator function `invoke()`, we now treat the Server as a simple function which takes Action instances:
 
 ```kotlin
 val gitHub: GitHubApi = GitHubApi.Http(OkHttp())
