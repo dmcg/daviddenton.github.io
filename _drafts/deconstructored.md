@@ -9,13 +9,8 @@ thumbnail: assets/img/deconstructored.jpg
 In which I try to reason with myself about how five years of Kotlin has encouraged me to construct programs.
 
 <a title="Image by Steve Buissinne from Pixabay"
-href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="<a title="Image by Steve Buissinne from Pixabay"
-href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="connect patterm" src="
-../../../assets/img/connectpattern.jpg"></a>
-" src="
-../../../assets/img/connectpattern.jpg"></a>
-
-<img width="800" alt="Deconstructored" src="../../../assets/img/deconstructored.jpg">
+href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="construction" src="
+../../../assets/img/deconstructored.jpg"></a>
 
 <hr/>
 
