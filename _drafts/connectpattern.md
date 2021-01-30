@@ -78,7 +78,7 @@ This is all quite sensible - there is a shared HTTP client which is configured t
 As there is generally no interaction between these functions - it would be desirable to structure the code in a similar way to how we structured our inbound API - in a modular, easily testable and reusable fashion. Even so, we also want to find a way to build functions which combine one or more calls to the API.
 
 #### Introducing the Connect pattern
-This is where the Connect pattern will help us. In essence, the pattern allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. That's quite a lot to take in, so let's split it down and take a look by reimplementing the example above.
+This is where the Connect pattern will help us. In essence, the pattern allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. Let's split it down and take a look by reimplementing the example above.
 
 The pattern itself has been created around the facilities available in the Kotlin language - most notably the use of interfaces and extension functions. Other languages may not have these exact same facilities, but the pattern should be adaptable (to greater or lesser effect).
 
