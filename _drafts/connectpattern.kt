@@ -1,6 +1,9 @@
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import dev.forkhandles.result4k.Failure
+import dev.forkhandles.result4k.Result
 import dev.forkhandles.result4k.Success
+import dev.forkhandles.result4k.resultFrom
 import io.mockk.every
 import io.mockk.mockk
 import org.http4k.client.OkHttp
@@ -20,6 +23,8 @@ import org.http4k.routing.routes
 import org.http4k.server.Netty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.Test
+import java.lang.RuntimeException
+import java.rmi.RemoteException
 
 object before {
     fun MySecureApp(): HttpHandler =
@@ -56,11 +61,14 @@ object before {
     val user: UserDetails = gitHub.getUser("octocat")
 }
 
-// interface
-interface GitHubApiAction<R> {
+
+interface Action<R> {
     fun toRequest(): Request
     fun fromResponse(response: Response): R
 }
+
+// interface
+interface GitHubApiAction<R>: Action<R>
 
 interface GitHubApi {
     operator fun <R : Any> invoke(action: GitHubApiAction<R>): R
@@ -105,8 +113,6 @@ fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(
 
 //val latestUser: UserDetails = gitHub.getLatestUser("http4k", "http4k-connect")
 
-fun SetHeader(name: String, value: String): Filter = TODO()
-
 @Test
 fun `get user details`() {
     val githubApi = mockk<GitHubApi>()
@@ -116,4 +122,16 @@ fun `get user details`() {
     assertThat(githubApi.getUser("anything"), equalTo(userDetails))
 }
 
+fun SetHeader(name: String, value: String): Filter = TODO()
 
+object result4k {
+    interface GitHubApiAction<R>: Action<Result<R, Exception>>
+
+    data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
+        override fun toRequest() = Request(GET, "/users/$username")
+        override fun fromResponse(response: Response) = when {
+            response.status.successful -> Success(UserDetails(response.bodyString()))
+            else -> Failure(RuntimeException("API returned: " + response.status))
+        }
+    }
+}

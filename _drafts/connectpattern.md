@@ -175,6 +175,32 @@ fun `get user details`() {
 }
 ```
 
+#### Varying the programming model
+Depending on the style of project being used, there are several different popular programming models which are commonly found out in the wild, and this will affect the value of the `R` type implemented for the Action classes. 
+
+As in our example above, traditional OO-style teams using languages which embrace the throwing of Exceptions will represent `R` as the straight result type returned by the method, but teams that adopt a more Functional Programming approach will tend towards using a more monadic return type such as Result4k's `Result`, Arrow's `Either` or `Try`, or (when it is available) Kotlin's built in `Result` type.
+
+The good news is that due to the decoupling of the Connect abstractions, any of these models can be supported simply by writing Actions in the relevant style. Here is an alternative example for the `GetUser` action using the Result4k monad:
+
+```kotlin
+interface GitHubApiAction<R>: Action<Result<R, Exception>>
+
+data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
+    override fun toRequest() = Request(GET, "/users/$username")
+    override fun fromResponse(response: Response) = when {
+        response.status.successful -> Success(UserDetails(response.bodyString()))
+        else -> Failure(RuntimeException("API returned: " + response.status))
+    }
+}
+```
+
+#### Extending the Connect pattern
+The decoupling of the Action and Adapter classes mean.. 
+
+
+#### Further notes on the http4k-connect implementation
+
+
 <hr/>
 
 ### ps.
