@@ -4,8 +4,8 @@ tags: [kotlin, fp, design]
 comments: false thumbnail: assets/img/connectpattern.jpg
 ---
 
-In which I describe a pattern for writing third party adapters in a modular and extensible way, hoping that it is
-original enough for me to christen it.
+In this post, I'll describe a pattern for writing third party adapters in a modular and extensible way, hoping that it is
+original enough for me to christen it. 🙃
 
 <a title="Image by Steve Buissinne from Pixabay"
 href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="smash egg" src="
