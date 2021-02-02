@@ -80,7 +80,7 @@ As there is generally no interaction between these functions - it would be desir
 #### Introducing the Connect pattern
 This is where the Connect pattern will help us. In essence, Connect allows the splitting of an adapter monolith into individual Actions and a shared Protocol object which centralises the communication with the API. 
 
-The pattern itself has been created around the features available in the Kotlin language - most notably the use of interfaces and extension methods. Other languages may not have these exact same facilities, but Connect should be adaptable (to greater or lesser effect). Let's split it down and take a look by reimplementing the example above.
+The pattern itself has been created around the features available in the Kotlin language - most notably the use of interfaces and extension functions. Other languages may not have these exact same facilities, but Connect should be adaptable (to greater or lesser effect). Let's split it down and take a look by reimplementing the example above.
 
 The following explanation is based upon a simplified version of the [http4k-connect](https://github.com/http4k/http4k-connect) library, which we're using as the canonical implementation of the pattern. As the name implies, http4k-connect is itself built upon the [http4k](https://http4k.org) HTTP toolkit for it's core HTTP abstractions, although there is nothing in the pattern to tie it to this library (or even to the HTTP protocol).
 
@@ -138,8 +138,8 @@ val user: UserDetails = gitHub(GetUser("octocat"))
 
 This change may leave a slight bad taste in the mouth as the API is no longer as IDE discoverable. Luckily, Kotlin has another trick up it's sleeve here which will help us...
 
-#### Extension Methods
-We can get back our old API very simply by creating another extension method for each Action that mimics the signature of the Action itself and delegates to the `invoke()` call in the client:
+#### Extension Functions
+We can get back our old API very simply by creating another extension function for each Action that mimics the signature of the Action itself and delegates to the `invoke()` call in the client:
 
 ```kotlin
 fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
@@ -148,7 +148,7 @@ fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(
 val user: UserDetails = gitHub.getUser("octocat")
 ```
 
-Even better, for actions which consist more than one API call such as `getLatestUserForCommit()` below, we can just create more extension functions which delegate down to the individual actions. These functions can be added to `GitHubApi` instances at the global level, or just in the contexts or modules which make sense. The extension method effectively allow us to compose our own custom `GitHubApi` Adapter out of the individual Action parts that we are interested in:
+Even better, for actions which consist more than one API call such as `getLatestUserForCommit()` below, we can just create more extension functions which delegate down to the individual actions. These functions can be added to `GitHubApi` instances at the global level, or just in the contexts or modules which make sense. The extension function effectively allow us to compose our own custom `GitHubApi` Adapter out of the individual Action parts that we are interested in:
 
 ```kotlin
 fun GitHubApi.getLatestUser(org: String, repo: String) {
@@ -208,7 +208,7 @@ data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
 ### summary 
 The Connect pattern combines simple abstractions to provide a model that allows us to break down the common problem of the monolithic outbound API adapter into easily digestable parts. Although initially designed around HTTP, it will fit any request/response protocol and can easily be adapted to different programming models including Result monads and Future types. This modularity provides a a mirror image of the composability that we expect when building inbound Serverside interfaces, and this further leads to a more testable and extensible codebase.
 
-Although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension methods (such as Kotlin) provide an ideal platform for implementations. In statically typed languages, sufficiently advanced Generic capabilities are the only required language feature.
+Although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension functions (such as Kotlin) provide an ideal platform for implementations. In statically typed languages, sufficiently advanced Generic capabilities are the only required language feature.
 
 ### Further notes on the http4k-connect implementation
 <a title="http4k connect"
@@ -217,5 +217,5 @@ href="https://github.com/http4k/http4k-connect"><img width="800" alt="http4k con
 
 The Open Source [http4k-connect](https://github.com/http4k/http4k-connect) Kotlin libraries provide both the basic framework for implementing Connect pattern adapters, but also a set of pre-built API adapters for communicating with popular cloud services such as AWS. Further, http4k-connect provides a set of protocol-compatible In-Memory/Runnable Fake Servers which can be used as test-doubles for the various services, and a set of Storage backends (such as In-Memory, S3 and Redis) for test-data to be housed. 
 
-The libraries are designed to be as lightweight as possible, meaning they are a perfect use-case for Serverless deployments, They use compile-time code-generation to automatically write extension methods for each of the implemented Actions using Kapt, and ships without the need for reflection in JSON message parsing by also generating message adapters for the [Moshi](https://github.com/square/moshi) JSON framework with the [Kotshi](https://github.com/ansman/kotshi) plugin.
+The libraries are designed to be as lightweight as possible, meaning they are a perfect use-case for Serverless deployments, They use compile-time code-generation to automatically write extension functions for each of the implemented Actions using Kapt, and ships without the need for reflection in JSON message parsing by also generating message adapters for the [Moshi](https://github.com/square/moshi) JSON framework with the [Kotshi](https://github.com/ansman/kotshi) plugin.
 
