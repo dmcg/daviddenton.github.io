@@ -55,22 +55,26 @@ Additionally, because we have modularised the code in this way, it is also reusa
 When it comes to part 4 of the list above - adapter code for other remote APIs - we don't generally have a pattern in place to use the same structure. HTTP adapters to remote systems are usually constructed as monolithic classes with many methods, all built around a singularly configured HTTP adapter. Let's say we want to talk to the GitHub API, we would normally build an API adapter like so:
 
 ```kotlin
-class GitHubApi(client: HttpHandler) {
+ class GitHubApi(client: HttpHandler) {
     private val http = SetBaseUriFrom(Uri.of("https://api.github.com"))
         .then(SetHeader("Accept", "application/vnd.github.v3+json"))
         .then(client)
 
-    fun getUser(username: String) = UserDetails(http(Request(GET, "/users/$username")).bodyString())
+    fun getUser(username: String): UserDetails {
+        val response = http(Request(GET, "/users/$username"))
+        return UserDetails(response.userName(), response.userOrgs())
+    }
 
-    fun getRepoLatestCommit(owner: String, repo: String): Commit = Commit(
+    fun getRepoLatestCommit(owner: String, repo: String) = Commit(
         http(
             Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
-        ).bodyString()
+        ).author()
     )
 }
 
 val gitHub: GitHubApi = GitHubApi(OkHttp())
 val user: UserDetails = gitHub.getUser("octocat")
+
 ```
 
 This is all quite sensible - there is a shared HTTP client which is configured to send requests to the API with the correct `Accept` header. Unfortunately though, as our usage of the API grows, so will the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual) functions, all of which generally provide singular access to a single API call. We end up with a monolith object which can be thousands of lines long if left unchecked.
@@ -96,10 +100,10 @@ interface GitHubApiAction<R> {
 
 data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
     override fun toRequest() = Request(GET, "/users/$username")
-    override fun fromResponse(response: Response) = UserDetails(response.bodyString())
+    override fun fromResponse(response: Response) = UserDetails(response.userName(), response.userOrgs())
 }
 
-data class UserDetails(val userJson: String)
+data class UserDetails(val name: String, val orgs: List<String>)
 ```
 
 #### Adapter
@@ -151,7 +155,7 @@ val user: UserDetails = gitHub.getUser("octocat")
 Even better, for actions which consist more than one API call such as `getLatestUserForCommit()` below, we can just create more extension functions which delegate down to the individual actions. These functions can be added to `GitHubApi` instances at the global level, or just in the contexts or modules which make sense. The extension function effectively allow us to compose our own custom `GitHubApi` Adapter out of the individual Action parts that we are interested in:
 
 ```kotlin
-fun GitHubApi.getLatestUser(org: String, repo: String) {
+fun GitHubApi.getLatestUser(org: String, repo: String): UserDetails {
     val commit = getLatestRepoCommit(org, repo)
     return getUser(commit.author)
 }
@@ -168,10 +172,10 @@ Fortunately, the simplicity of the single arity functional Adapter interface in 
 @Test
 fun `get user details`() {
     val githubApi = mockk<GitHubApi>()
-    val userDetails = UserDetails("{}")
+    val userDetails = UserDetails("bob", listOf("http4k"))
     every { githubApi(any<GetUser>()) } returns userDetails
 
-    assertThat(githubApi.getUser("anything"), equalTo(userDetails))
+    assertThat(githubApi.getUser("bob"), equalTo(userDetails))
 }
 ```
 
@@ -186,6 +190,17 @@ class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
 }
 ```
 
+TODO we can also write test versions...
+```kotlin
+class StubGitHubApi(private val users: Map<String, UserDetails>) : GitHubApi {
+    override fun <R : Any> invoke(action: GitHubApiAction<R>): R = when (action) {
+        is GetUser -> users[action.username] as R
+        is GetRepoLatestCommit -> Commit(users.keys.first()) as R
+        else -> throw UnsupportedOperationException()
+    }
+}
+```
+
 #### Varying the programming model
 Depending on the style of team, there are several different popular programming models which may be commonly found out in the wild, and this will affect the value of the `R` type implemented for the Action classes. 
 
@@ -194,12 +209,15 @@ As in our example above, traditional OO-style teams using languages which embrac
 The good news is that due to the decoupling of the Connect abstractions, any of these models can be supported simply by writing Actions in the relevant style. Here is an alternative example for the `GetUser` action using the Result4k monad:
 
 ```kotlin
-interface GitHubApiAction<R>: Action<Result<R, Exception>>
+interface GitHubApiAction<R> {
+    fun toRequest(): Request
+    fun fromResponse(response: Response): Result<R, Exception>
+}
 
 data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
     override fun toRequest() = Request(GET, "/users/$username")
     override fun fromResponse(response: Response) = when {
-        response.status.successful -> Success(UserDetails(response.bodyString()))
+        response.status.successful -> Success(UserDetails(response.userName(), response.userOrgs()))
         else -> Failure(RuntimeException("API returned: " + response.status))
     }
 }

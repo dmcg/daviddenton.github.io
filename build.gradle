@@ -1,6 +1,6 @@
 buildscript {
-    ext.kotlin_version = "1.4.21"
-    ext.http4k_version = "4.0.0.0"
+    ext.kotlin_version = "1.4.30"
+    ext.http4k_version = "4.2.0.0"
     ext.mockk_version = "1.10.5"
     ext.junit_version = "5.7.0"
 
@@ -46,6 +46,7 @@ dependencies {
 
 compileKotlin.kotlinOptions.jvmTarget = "1.8"
 compileTestKotlin.kotlinOptions.jvmTarget = "1.8"
+compileTestKotlin.kotlinOptions.useIR = true
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8

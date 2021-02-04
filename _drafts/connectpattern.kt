@@ -22,6 +22,7 @@ import org.http4k.routing.routes
 import org.http4k.server.Netty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 object before {
     fun MySecureApp(): HttpHandler =
@@ -44,49 +45,52 @@ object before {
             .then(SetHeader("Accept", "application/vnd.github.v3+json"))
             .then(client)
 
-        fun getUser(username: String) = UserDetails(http(Request(GET, "/users/$username")).bodyString())
+        fun getUser(username: String): UserDetails {
+            val response = http(Request(GET, "/users/$username"))
+            return UserDetails(response.userName(), response.userOrgs())
+        }
 
-        fun getRepoLatestCommit(owner: String, repo: String): Commit = Commit(
+        fun getRepoLatestCommit(owner: String, repo: String) = Commit(
             http(
                 Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
-            ).bodyString()
+            ).author()
         )
     }
 
     val gitHub: GitHubApi = GitHubApi(OkHttp())
-
     val user: UserDetails = gitHub.getUser("octocat")
+
 }
 
+fun Response.author() = "bob"
+fun Response.userName() = "bob"
+fun Response.userOrgs() = listOf<String>()
 
-interface Action<R> {
+// interface
+interface GitHubApiAction<R> {
     fun toRequest(): Request
     fun fromResponse(response: Response): R
 }
 
-// interface
-interface GitHubApiAction<R> : Action<R>
+// action/response
+data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
+    override fun toRequest() = Request(GET, "/users/$username")
+    override fun fromResponse(response: Response) = UserDetails(response.userName(), response.userOrgs())
+}
+data class UserDetails(val name: String, val orgs: List<String>)
+
+data class GetRepoLatestCommit(val owner: String, val repo: String) : GitHubApiAction<Commit> {
+    override fun toRequest() = Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
+    override fun fromResponse(response: Response) = Commit(response.author())
+}
+data class Commit(val author: String)
+
 
 interface GitHubApi {
     operator fun <R : Any> invoke(action: GitHubApiAction<R>): R
 
     companion object
 }
-
-// action/response
-data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
-    override fun toRequest() = Request(GET, "/users/$username")
-    override fun fromResponse(response: Response) = UserDetails(response.bodyString())
-}
-
-data class UserDetails(val userJson: String)
-
-data class GetRepoLatestCommit(val owner: String, val repo: String) : GitHubApiAction<Commit> {
-    override fun toRequest() = Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
-    override fun fromResponse(response: Response) = Commit(response.bodyString())
-}
-
-data class Commit(val commitJson: String)
 
 // adapter
 fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
@@ -98,25 +102,26 @@ fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
 }
 
 val gitHub: GitHubApi = GitHubApi.Http(OkHttp())
+val user: UserDetails = gitHub.getUser("octocat")
 
 // extension function - nicer API
 fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
 fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(GetRepoLatestCommit(owner, repo))
 
-//fun GitHubApi.getLatestUser(org: String, repo: String) {
-//    val commit = getLatestRepoCommit(org, repo)
-//    return getUser(commit.author)
-//}
+fun GitHubApi.getLatestUser(org: String, repo: String): UserDetails {
+    val commit = getLatestRepoCommit(org, repo)
+    return getUser(commit.author)
+}
 
-//val latestUser: UserDetails = gitHub.getLatestUser("http4k", "http4k-connect")
+val latestUser: UserDetails = gitHub.getLatestUser("http4k", "http4k-connect")
 
 @Test
 fun `get user details`() {
     val githubApi = mockk<GitHubApi>()
-    val userDetails = UserDetails("{}")
+    val userDetails = UserDetails("bob", listOf("http4k"))
     every { githubApi(any<GetUser>()) } returns userDetails
 
-    assertThat(githubApi.getUser("anything"), equalTo(userDetails))
+    assertThat(githubApi.getUser("bob"), equalTo(userDetails))
 }
 
 class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
@@ -127,15 +132,26 @@ class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
     }
 }
 
+class StubGitHubApi(private val users: Map<String, UserDetails>) : GitHubApi {
+    override fun <R : Any> invoke(action: GitHubApiAction<R>): R = when (action) {
+        is GetUser -> users[action.username] as R
+        is GetRepoLatestCommit -> Commit(users.keys.first()) as R
+        else -> throw UnsupportedOperationException()
+    }
+}
+
 fun SetHeader(name: String, value: String): Filter = TODO()
 
 object result4k {
-    interface GitHubApiAction<R> : Action<Result<R, Exception>>
+    interface GitHubApiAction<R> {
+        fun toRequest(): Request
+        fun fromResponse(response: Response): Result<R, Exception>
+    }
 
     data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
         override fun toRequest() = Request(GET, "/users/$username")
         override fun fromResponse(response: Response) = when {
-            response.status.successful -> Success(UserDetails(response.bodyString()))
+            response.status.successful -> Success(UserDetails(response.userName(), response.userOrgs()))
             else -> Failure(RuntimeException("API returned: " + response.status))
         }
     }
