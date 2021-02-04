@@ -22,7 +22,6 @@ import org.http4k.routing.routes
 import org.http4k.server.Netty
 import org.http4k.server.asServer
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 object before {
     fun MySecureApp(): HttpHandler =
@@ -134,11 +133,16 @@ class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
 
 class StubGitHubApi(private val users: Map<String, UserDetails>) : GitHubApi {
     override fun <R : Any> invoke(action: GitHubApiAction<R>): R = when (action) {
-        is GetUser -> users[action.username] as R
-        is GetRepoLatestCommit -> Commit(users.keys.first()) as R
+        is GetUser -> getUser(action, users) as R
+        is GetRepoLatestCommit -> getRepoLatestCommit(action, users) as R
         else -> throw UnsupportedOperationException()
     }
+
 }
+
+private fun getUser(action: GetUser, users: Map<String, UserDetails>) = users[action.username]
+private fun getRepoLatestCommit(action: GetRepoLatestCommit, users: Map<String, UserDetails>) = Commit(action.owner)
+
 
 fun SetHeader(name: String, value: String): Filter = TODO()
 

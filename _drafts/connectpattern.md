@@ -11,12 +11,12 @@ original enough for me to christen it. 🙃
 href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="smash egg" src="
 ../../../assets/img/connectpattern.jpg"></a>
 
+### TL;DR
 > **"Breaking down monolithic remote API adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be more decoupled at the code layer, but also simplifies both testing and extensibility."**
 
 <hr/>
 
-### rta
-
+### RtA (Read the Article!)
 The main bulk of non-operationally focussed application code in a modern Server-based HTTP microservice can be broken
 down into a few broad areas:
 
@@ -179,7 +179,8 @@ fun `get user details`() {
 }
 ```
 
-The Action object being a single instance also gives us the ability to easily decorate our Adapter instance for testing or other purposes, for instance we can record all of the incoming calls:
+The Action object being a single instance also gives us the ability to easily decorate our Adapter instance for testing or other purposes, for instance we can record all of the incoming calls for any purpose we want:
+
 ```kotlin
 class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
     val recorded = mutableListOf<GitHubApiAction<*>>()
@@ -188,17 +189,25 @@ class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
         return delegate(action)
     }
 }
+
+val recorder = RecordingGitHubApi()
+recorder.getUser("bob")
+
+println(recorder.recorded)
 ```
 
-TODO we can also write test versions...
+Writing Stub implementations of an Adapter is also very simple, and the Connect pattern also encourages the same type of decomposed structure as with the real adapter - by creating extension functions which act on our in-memory state to create their responses. Once again, this helps to keep a grip on the size of the Adapter code.
 ```kotlin
 class StubGitHubApi(private val users: Map<String, UserDetails>) : GitHubApi {
     override fun <R : Any> invoke(action: GitHubApiAction<R>): R = when (action) {
-        is GetUser -> users[action.username] as R
-        is GetRepoLatestCommit -> Commit(users.keys.first()) as R
+        is GetUser -> getUser(action, users) as R
+        is GetRepoLatestCommit -> getRepoLatestCommit(action, users) as R
         else -> throw UnsupportedOperationException()
     }
 }
+
+private fun getUser(action: GetUser, users: Map<String, UserDetails>) = users[action.username]
+private fun getRepoLatestCommit(action: GetRepoLatestCommit, users: Map<String, UserDetails>) = Commit(action.owner)
 ```
 
 #### Varying the programming model
@@ -223,7 +232,7 @@ data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
 }
 ```
 
-### summary 
+### Summary 
 The Connect pattern combines simple abstractions to provide a model that allows us to break down the common problem of the monolithic outbound API adapter into easily digestable parts. Although initially designed around HTTP, it will fit any request/response protocol and can easily be adapted to different programming models including Result monads and Future types. This modularity provides a a mirror image of the composability that we expect when building inbound Serverside interfaces, and this further leads to a more testable and extensible codebase.
 
 Although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension functions (such as Kotlin) provide an ideal platform for implementations. In statically typed languages, sufficiently advanced Generic capabilities are the only required language feature.
