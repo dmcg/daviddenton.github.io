@@ -105,7 +105,8 @@ interface GitHubApiAction<R> {
 
 data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
     override fun toRequest() = Request(GET, "/users/$username")
-    override fun fromResponse(response: Response) = UserDetails(userNameFrom(response), userOrgsFrom(response))
+    override fun fromResponse(response: Response) = 
+        UserDetails(userNameFrom(response), userOrgsFrom(response))
 }
 
 data class UserDetails(val name: String, val orgs: List<String>)
@@ -132,7 +133,8 @@ fun GitHubApi.Companion.Http(client: HttpHandler) = object : GitHubApi {
         .then(SetHeader("Accept", "application/vnd.github.v3+json"))
         .then(client)
 
-    override fun <R : Any> invoke(action: GitHubApiAction<R>) = action.fromResponse(http(action.toRequest()))
+    override fun <R : Any> invoke(action: GitHubApiAction<R>) = 
+        action.fromResponse(http(action.toRequest()))
 }
 ```
 
@@ -152,7 +154,8 @@ We can get back our old API very simply by creating another extension function f
 
 ```kotlin
 fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
-fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = invoke(GetRepoLatestCommit(owner, repo))
+fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = 
+    invoke(GetRepoLatestCommit(owner, repo))
 
 val user: UserDetails = gitHub.getUser("octocat")
 ```
@@ -184,7 +187,7 @@ fun `get user details`() {
 }
 ```
 
-The Action object being a single instance also gives us the ability to easily decorate our Adapter instance for testing or other purposes, for instance we can record all of the incoming calls for any purpose we want:
+The Action object being a single parameter of the `invoke()` method also gives us the ability to easily decorate our Adapter instance for testing or other purposes, for instance we can record all of the incoming calls for any purpose we want:
 
 ```kotlin
 class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
@@ -201,7 +204,7 @@ recorder.getUser("bob")
 println(recorder.recorded)
 ```
 
-Writing Stub implementations of an Adapter is also very simple, and the Connect pattern also encourages the same type of decomposed structure as with the real adapter - by creating extension functions which act on our in-memory state to create their responses. Once again, this helps to keep a grip on the size of the Adapter code.
+Writing stub implementations of an Adapter is also very simple, and the Connect pattern also encourages the same type of decomposed structure as with the real adapter - by creating extension functions which act on our in-memory state to create their responses. Once again, this helps to keep a grip on the size of the Adapter code.
 ```kotlin
 class StubGitHubApi(private val users: Map<String, UserDetails>) : GitHubApi {
     override fun <R : Any> invoke(action: GitHubApiAction<R>): R = when (action) {
@@ -231,20 +234,23 @@ interface GitHubApiAction<R> {
 data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
     override fun toRequest() = Request(GET, "/users/$username")
     override fun fromResponse(response: Response) = when {
-        response.status.successful -> Success(UserDetails(userNameFrom(response), userOrgsFrom(response)))
+        response.status.successful -> 
+            Success(UserDetails(userNameFrom(response), userOrgsFrom(response)))
         else -> Failure(RuntimeException("API returned: " + response.status))
     }
 }
 ```
 
 ### Summary 
-The Connect pattern combines simple abstractions to provide a model that allows us to break down the common problem of the monolithic outbound API adapter into easily digestable parts. Although initially designed around HTTP, it will fit any request/response protocol and can easily be adapted to different programming models including Result monads and Future types. This modularity provides a a mirror image of the composability that we expect when building inbound Serverside interfaces, and this further leads to a more testable and extensible codebase. Although with a small example such as this, there is the potential for the approach seeming like overkill, it is generally much harder to retrofit a compositional design than it is to promote it from the outset.
+The Connect pattern combines simple abstractions to provide a model that allows us to break down the common problem of the monolithic outbound API adapter into easily digestable parts. This modularity provides a a mirror image of the composability that we expect when building inbound Serverside interfaces, and this further leads to a more testable and extensible codebase. With a small example such as this there is the potential for the approach seeming like overkill, but experience tells us that it is generally much harder to retrofit a compositional design than it is to promote it from the outset.
 
-Although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension functions (such as Kotlin) provide an ideal platform for implementations. In statically typed languages, sufficiently advanced Generic capabilities are the only required language feature.
+Initially designed around HTTP, the pattern will fit any request/response protocol and can easily be adapted to different programming models including Result monads and Future types.
 
-The code shown in this post is available [GitHub](https://github.com/http4k/http4k-connect-examples/tree/master/connect-pattern).
+Finally, although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension functions (such as Kotlin) provide an ideal platform for working with Connect. In statically typed languages, sufficiently advanced generic capabilities are the only required language feature.
 
-### Further notes on the http4k-connect implementation of the pattern
+Note: The code shown in this post is available in [GitHub](https://github.com/http4k/http4k-connect-examples/tree/master/connect-pattern).
+
+### Footnote on the http4k-connect implementation of the pattern
 <a title="http4k connect"
 href="https://github.com/http4k/http4k-connect"><img width="800" alt="http4k connect" src="
 ../../../assets/img/connect.png"></a>
