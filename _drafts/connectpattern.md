@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Smash your Adapter Monolith with the Connect Pattern"
+title: "Smash your Adapter Monolith with the Connect pattern"
 tags: [kotlin, fp, design]
 comments: false
 thumbnail: assets/img/connectpattern.jpg
