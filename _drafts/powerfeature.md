@@ -16,7 +16,7 @@ powerful, and how we can use them in creating ways to supercharge our API design
 
 <a title="Image by Nicole Köhler from Pixabay"
 href="https://pixabay.com/photos/power-lines-fields-sunset-twilight-532720">
-<img width="800" alt="Powerlines" src="
+<img class="article" alt="Powerlines" src="
 ../../../assets/img/powerfeature.jpg"></a>
 
 <hr/>

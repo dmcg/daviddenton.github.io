@@ -1037,3 +1037,9 @@ img.center {
     display: block;
     margin: 0 auto;
 }
+
+img.article {
+    width: 600px;
+    display: block;
+    margin: 0 auto;
+}

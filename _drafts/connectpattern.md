@@ -15,7 +15,7 @@ original enough for me to christen it. 🙃
 > **"Breaking down monolithic remote API adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be more decoupled at the code layer, but also simplifies both testing and extensibility."**
 
 <a title="Image by Steve Buissinne from Pixabay"
-href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="smash egg" src="
+href="https://pixabay.com/users/stevepb-282134"><img class="article" alt="smash egg" src="
 ../../../assets/img/connectpattern.jpg"></a>
 
 <hr/>
@@ -252,7 +252,7 @@ Note: The code shown in this post is available in [GitHub](https://github.com/ht
 
 ### Footnote on the http4k-connect implementation of the pattern
 <a title="http4k connect"
-href="https://github.com/http4k/http4k-connect"><img width="800" alt="http4k connect" src="
+href="https://github.com/http4k/http4k-connect"><img class="article" alt="http4k connect" src="
 ../../../assets/img/connect.png"></a>
 
 The Open Source [http4k-connect](https://github.com/http4k/http4k-connect) Kotlin libraries provide both the basic framework for implementing Connect pattern adapters, but also a set of pre-built API adapters for communicating with popular cloud services such as AWS. Further, http4k-connect provides a set of protocol-compatible In-Memory/Runnable Fake Servers which can be used as test-doubles for the various services, and a set of Storage backends (such as In-Memory, S3 and Redis) for test-data to be housed. 
