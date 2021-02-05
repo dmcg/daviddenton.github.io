@@ -20,7 +20,7 @@ href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="smash egg"
 
 <hr/>
 
-*Reader Note: whilst this post is about a pattern that is not Kotlin-specific, it does demonstrate the pattern using code written in Kotlin. This uses various Kotlin features such as [Data classes](https://kotlinlang.org/docs/reference/data-classes.html), [Companion Objects](https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects), [Operator overloading](hhttps://kotlinlang.org/docs/reference/operator-overloading.html) and [Extension functions](https://kotlinlang.org/docs/reference/extensions.html). It also uses the basics of the [http4k](https://www.http4k.org/rationale/) HTTP toolkit which might be worth referring to if unfamiliar with them.*
+*Reader Note: whilst this post is about a pattern that is not Kotlin-specific, it does demonstrate the pattern using code written in Kotlin. This uses various language features such as [Data classes](https://kotlinlang.org/docs/reference/data-classes.html), [Companion Objects](https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects), [Operator overloading](hhttps://kotlinlang.org/docs/reference/operator-overloading.html) and [Extension functions](https://kotlinlang.org/docs/reference/extensions.html). It also uses the basics of the [http4k](https://www.http4k.org/rationale/) HTTP toolkit which might be worth referring to if unfamiliar with them.*
 
 The main bulk of non-operationally focussed application code in a modern Server-based HTTP microservice can be broken
 down into a few broad areas:
