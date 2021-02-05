@@ -20,7 +20,6 @@ href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="smash egg"
 
 <hr/>
 
-### RtA (Read the Article!)
 The main bulk of non-operationally focussed application code in a modern Server-based HTTP microservice can be broken
 down into a few broad areas:
 
@@ -30,7 +29,7 @@ down into a few broad areas:
 4. Adapter code for outbound remote API communication
 
 #### Structuring our inbound APIs 
-For 1 above - the Server-side, we tend to model the application as a set of separate HTTP entrypoint classes/functions which are composed into a whole to represent the incoming HTTP API, either explicitly or via some meta-programming such as annotations. So for example, using [http4k](https://http4k/org), we might create and start our server with:
+For 1) - the Server-side - we tend to model the application as a set of separate HTTP entrypoint classes/functions which are composed into a whole to represent the incoming HTTP API, either explicitly or via some meta-programming such as annotations. So for example, using [http4k](https://http4k/org), we might create and start our server with:
 
 ```kotlin
 fun MySecureApp(): HttpHandler =
@@ -56,7 +55,7 @@ the rest - e.g. we don't need to provide a Bearer token to access our API calls 
 Additionally, because we have modularised the code in this way, it is also reusable in other contexts - we can put common endpoint code such as `health()` into a shared location and reuse them across our fleet of microservices.
 
 #### Structuring our outbound APIs
-When it comes to part 4 of the list above - adapter code for other remote APIs - we don't generally have a pattern in place to use the same structure. HTTP adapters to remote systems are usually constructed as monolithic classes with many methods, all built around a singularly configured HTTP adapter. Let's say we want to talk to the GitHub API, we would normally build an API adapter like so:
+When it comes to **4)** of the list above - adapter code for other remote APIs - we don't generally have a pattern in place to use the same structure. HTTP adapters to remote systems are usually constructed as monolithic classes with many methods, all built around a singularly configured HTTP adapter. Let's say we want to talk to the GitHub API, we would normally build an API adapter like so:
 
 ```kotlin
  class GitHubApi(client: HttpHandler) {
