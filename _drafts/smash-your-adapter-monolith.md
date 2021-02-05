@@ -3,7 +3,7 @@ layout: post
 title: "Smash your Adapter Monolith with the Connect pattern"
 tags: [kotlin, fp, design]
 comments: false
-thumbnail: assets/img/connectpattern.jpg
+thumbnail: assets/img/smash-your-adapter-monolith.jpg
 ---
 
 In which I describe a pattern for writing third party adapters in a modular and extensible way, hoping that it is
@@ -16,7 +16,7 @@ original enough for me to christen it. 🙃
 
 <a title="Image by Steve Buissinne from Pixabay"
 href="https://pixabay.com/users/stevepb-282134"><img class="article" alt="smash egg" src="
-../../../assets/img/connectpattern.jpg"></a>
+../../../assets/img/smash-your-adapter-monolith.jpg"></a>
 
 <hr/>
 
