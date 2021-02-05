@@ -20,6 +20,8 @@ href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="smash egg"
 
 <hr/>
 
+*Reader Note: whilst this post is about a pattern that is not Kotlin-specific, it does demonstrate the pattern using code written in Kotlin. This uses various Kotlin features such as [Data classes](https://kotlinlang.org/docs/reference/data-classes.html), [Companion Objects](https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects), [Operator overloading](hhttps://kotlinlang.org/docs/reference/operator-overloading.html) and [Extension functions](https://kotlinlang.org/docs/reference/extensions.html). It also uses the basics of the [http4k](https://www.http4k.org/rationale/) HTTP toolkit which might be worth referring to if unfamiliar with them.*
+
 The main bulk of non-operationally focussed application code in a modern Server-based HTTP microservice can be broken
 down into a few broad areas:
 
@@ -29,7 +31,7 @@ down into a few broad areas:
 4. Adapter code for outbound remote API communication
 
 #### Structuring our inbound APIs 
-For 1) - the Server-side - we tend to model the application as a set of separate HTTP entrypoint classes/functions which are composed into a whole to represent the incoming HTTP API, either explicitly or via some meta-programming such as annotations. So for example, using [http4k](https://http4k/org), we might create and start our server with:
+For 1) - the Server-side - we tend to model the application as a set of separate HTTP entrypoint classes/functions which are composed into a whole to represent the incoming HTTP API, either explicitly or via some meta-programming such as annotations. So for example, using http4k, we might create and start our server with:
 
 ```kotlin
 fun MySecureApp(): HttpHandler =
@@ -169,7 +171,7 @@ val latestUser: UserDetails = gitHub.getLatestUser("http4k", "http4k-connect")
 ### Testing the Connect pattern
 Both the Adapter and the modularisation of the various Action classes make it very easy to write unit tests for the action code created using the Connect pattern, but it's also important to consider how the API design will affect the testing of client code.
 
-Fortunately, the simplicity of the single arity functional Adapter interface in concert with the Actions being implemented as Kotlin Data classes (which are easily comparable) make testing as a client of Connect APIs trivial at multiple levels. Consider for instance if we are intending to mock a function which has seven parameters that we don't care about - in the previous implementation we would have to mock out each of those with a value (or an `any()` matcher), versus a single `any<Action>()` covering the Connect version:
+Fortunately, the simplicity of the single arity functional Adapter interface in concert with the Actions being implemented as Kotlin data classes (which are easily comparable) make testing as a client of Connect APIs trivial at multiple levels. Consider for instance if we are intending to mock a function which has seven parameters that we don't care about - in the previous implementation we would have to mock out each of those with a value (or an `any()` matcher), versus a single `any<Action>()` covering the Connect version:
 
 ```kotlin
 @Test
@@ -216,7 +218,7 @@ private fun getRepoLatestCommit(action: GetRepoLatestCommit) = Commit(action.own
 #### Varying the programming model
 Depending on the style of team, there are several different popular programming models which may be commonly found out in the wild, and this will affect the value of the `R` type implemented for the Action classes. 
 
-As in our example above, traditional OO-style teams using languages which embrace the throwing of Exceptions will represent `R` as the straight result type returned by the method, but teams that adopt a more Functional Programming approach will tend towards using a more monadic return type such as Result4k's `Result`, Arrow's `Either` or `Try`, or (when it is available) Kotlin's built in `Result` type.
+As in our example above, traditional OO-style teams using languages which embrace the throwing of Exceptions will represent `R` as the straight result type returned by the method, but teams that adopt a more Functional Programming approach will tend towards using a more monadic return type such as [Result4k](https://github.com/fork-handles/forkhandles/tree/trunk/result4k)'s `Result`, [Arrow](https://arrow-kt.io/docs/apidocs/arrow-core-data/arrow.core/-either/)'s `Either`, or (when it is generally available) Kotlin's built in [Result](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-result/) type.
 
 The good news is that due to the decoupling of the Connect abstractions, any of these models can be supported simply by writing Actions in the relevant style. Here is an alternative example for the `GetUser` action using the Result4k monad:
 
