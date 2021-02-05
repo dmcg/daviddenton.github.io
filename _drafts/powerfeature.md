@@ -9,16 +9,15 @@ thumbnail: assets/img/powerfeature.jpg
 In which I argue the case for Kotlin's Companion Objects being the Clark Kent of language features, in being deceptively
 powerful, and how we can use them in creating ways to supercharge our API design.
 
+<hr/>
+
+### TL;DR
+> **"Companion Objects are not just placeholders for constants and other static state; they allow for new strategies to help organise our code or to provide reusable factory and validation features."**
+
 <a title="Image by Nicole Köhler from Pixabay"
 href="https://pixabay.com/photos/power-lines-fields-sunset-twilight-532720">
 <img width="800" alt="Powerlines" src="
 ../../../assets/img/powerfeature.jpg"></a>
-
-<hr/>
-
-### TL;DR
-
-> **"Companion Objects are not just placeholders for constants and other static state; they allow for new strategies to help organise our code or to provide reusable factory and validation features."**
 
 <hr/>
 

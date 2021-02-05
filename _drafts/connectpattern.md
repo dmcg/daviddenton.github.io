@@ -6,8 +6,10 @@ comments: false
 thumbnail: assets/img/connectpattern.jpg
 ---
 
-In this post, I'll describe a pattern for writing third party adapters in a modular and extensible way, hoping that it is
+In which I describe a pattern for writing third party adapters in a modular and extensible way, hoping that it is
 original enough for me to christen it. 🙃
+
+<hr/>
 
 ### TL;DR
 > **"Breaking down monolithic remote API adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be more decoupled at the code layer, but also simplifies both testing and extensibility."**

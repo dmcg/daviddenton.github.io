@@ -8,14 +8,14 @@ thumbnail: assets/img/deconstructored.jpg
 
 In which I try to reason with myself about how five years of Kotlin has encouraged me to construct programs.
 
-<a title="Image by Steve Buissinne from Pixabay"
-href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="construction" src="
-../../../assets/img/deconstructored.jpg"></a>
-
 <hr/>
 
 ### TL;DR
 > **"Wherever possible, don't eagerly promote an created object instance to have class identity when it is only providing partial application of common parameters over an abstraction. Minimise your exposed API surface."**
+
+<a title="Image by Steve Buissinne from Pixabay"
+href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="construction" src="
+../../../assets/img/deconstructored.jpg"></a>
 
 <hr/>
 
