@@ -112,7 +112,7 @@ data class UserDetails(val name: String, val orgs: List<String>)
 #### Adapter
 The Adapter interface represents the common base protocol for interacting with the remote API - it will deal with server host location, authorisation and other headers, and perform the actual HTTP interactions. Each Adapter is modelled as a simple interface with a single generic method accepting the generic Action type.
 
-Note here the presence of the Kotlin `companion object` - it is there to give us a point to hook other code onto to make life easier for the API user.
+Note here the presence of the Kotlin `companion object` - it is meant to be empty and is there precisely to give us a point to hook other code onto in a moment. This is to make life easier for the API user.
 
 ```kotlin
 interface GitHubApi {
