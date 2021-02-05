@@ -1031,3 +1031,9 @@ a.tag:hover {
 pre.highlight {
     margin-bottom: 30px;
 }
+
+img.center {
+    height: 50px;
+    display: block;
+    margin: 0 auto;
+}
