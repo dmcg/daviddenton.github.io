@@ -242,7 +242,9 @@ The Connect pattern combines simple abstractions to provide a model that allows 
 
 Although not crucial to the implementation of the Connect pattern, more advanced programming languages with features such as extension functions (such as Kotlin) provide an ideal platform for implementations. In statically typed languages, sufficiently advanced Generic capabilities are the only required language feature.
 
-### Further notes on the http4k-connect implementation
+The code shown in this post is available [GitHub](https://github.com/http4k/http4k-connect-examples/tree/master/connect-pattern).
+
+### Further notes on the http4k-connect implementation of the pattern
 <a title="http4k connect"
 href="https://github.com/http4k/http4k-connect"><img width="800" alt="http4k connect" src="
 ../../../assets/img/connect.png"></a>
