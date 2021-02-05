@@ -1,18 +1,20 @@
 ---
-layout: post title: "Smash your Adapter Monolith with the Connect Pattern"
+layout: post
+title: "Smash your Adapter Monolith with the Connect Pattern"
 tags: [kotlin, fp, design]
-comments: false thumbnail: assets/img/connectpattern.jpg
+comments: false
+thumbnail: assets/img/connectpattern.jpg
 ---
 
 In this post, I'll describe a pattern for writing third party adapters in a modular and extensible way, hoping that it is
 original enough for me to christen it. 🙃
 
+### TL;DR
+> **"Breaking down monolithic remote API adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be more decoupled at the code layer, but also simplifies both testing and extensibility."**
+
 <a title="Image by Steve Buissinne from Pixabay"
 href="https://pixabay.com/users/stevepb-282134"><img width="800" alt="smash egg" src="
 ../../../assets/img/connectpattern.jpg"></a>
-
-### TL;DR
-> **"Breaking down monolithic remote API adapters into individual Actions sharing a common single-function Protocol interface allows them to not only be more decoupled at the code layer, but also simplifies both testing and extensibility."**
 
 <hr/>
 
