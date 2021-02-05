@@ -65,13 +65,13 @@ When it comes to **4)** of the list above - adapter code for other remote APIs -
 
     fun getUser(username: String): UserDetails {
         val response = http(Request(GET, "/users/$username"))
-        return UserDetails(response.userName(), response.userOrgs())
+        return UserDetails(userNameFrom(response), userOrgsFrom(response))
     }
 
     fun getRepoLatestCommit(owner: String, repo: String) = Commit(
-        http(
-            Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
-        ).author()
+        authorFrom(
+            http(Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1"))
+        )
     )
 }
 
@@ -103,7 +103,7 @@ interface GitHubApiAction<R> {
 
 data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
     override fun toRequest() = Request(GET, "/users/$username")
-    override fun fromResponse(response: Response) = UserDetails(response.userName(), response.userOrgs())
+    override fun fromResponse(response: Response) = UserDetails(userNameFrom(response), userOrgsFrom(response))
 }
 
 data class UserDetails(val name: String, val orgs: List<String>)
@@ -204,13 +204,13 @@ Writing Stub implementations of an Adapter is also very simple, and the Connect 
 class StubGitHubApi(private val users: Map<String, UserDetails>) : GitHubApi {
     override fun <R : Any> invoke(action: GitHubApiAction<R>): R = when (action) {
         is GetUser -> getUser(action, users) as R
-        is GetRepoLatestCommit -> getRepoLatestCommit(action, users) as R
+        is GetRepoLatestCommit -> getRepoLatestCommit(action) as R
         else -> throw UnsupportedOperationException()
     }
 }
 
 private fun getUser(action: GetUser, users: Map<String, UserDetails>) = users[action.username]
-private fun getRepoLatestCommit(action: GetRepoLatestCommit, users: Map<String, UserDetails>) = Commit(action.owner)
+private fun getRepoLatestCommit(action: GetRepoLatestCommit) = Commit(action.owner)
 ```
 
 #### Varying the programming model
@@ -229,7 +229,7 @@ interface GitHubApiAction<R> {
 data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
     override fun toRequest() = Request(GET, "/users/$username")
     override fun fromResponse(response: Response) = when {
-        response.status.successful -> Success(UserDetails(response.userName(), response.userOrgs()))
+        response.status.successful -> Success(UserDetails(userNameFrom(response), userOrgsFrom(response)))
         else -> Failure(RuntimeException("API returned: " + response.status))
     }
 }

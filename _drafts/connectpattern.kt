@@ -46,13 +46,13 @@ object before {
 
         fun getUser(username: String): UserDetails {
             val response = http(Request(GET, "/users/$username"))
-            return UserDetails(response.userName(), response.userOrgs())
+            return UserDetails(userNameFrom(response), userOrgsFrom(response))
         }
 
         fun getRepoLatestCommit(owner: String, repo: String) = Commit(
-            http(
+            authorFrom(http(
                 Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
-            ).author()
+            ))
         )
     }
 
@@ -61,9 +61,9 @@ object before {
 
 }
 
-fun Response.author() = "bob"
-fun Response.userName() = "bob"
-fun Response.userOrgs() = listOf<String>()
+fun authorFrom(response: Response) = "bob"
+fun userNameFrom(response: Response) = "bob"
+fun userOrgsFrom(response: Response) = listOf<String>()
 
 // interface
 interface GitHubApiAction<R> {
@@ -74,13 +74,13 @@ interface GitHubApiAction<R> {
 // action/response
 data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
     override fun toRequest() = Request(GET, "/users/$username")
-    override fun fromResponse(response: Response) = UserDetails(response.userName(), response.userOrgs())
+    override fun fromResponse(response: Response) = UserDetails(userNameFrom(response), userOrgsFrom(response))
 }
 data class UserDetails(val name: String, val orgs: List<String>)
 
 data class GetRepoLatestCommit(val owner: String, val repo: String) : GitHubApiAction<Commit> {
     override fun toRequest() = Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")
-    override fun fromResponse(response: Response) = Commit(response.author())
+    override fun fromResponse(response: Response) = Commit(authorFrom(response))
 }
 data class Commit(val author: String)
 
@@ -134,14 +134,13 @@ class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
 class StubGitHubApi(private val users: Map<String, UserDetails>) : GitHubApi {
     override fun <R : Any> invoke(action: GitHubApiAction<R>): R = when (action) {
         is GetUser -> getUser(action, users) as R
-        is GetRepoLatestCommit -> getRepoLatestCommit(action, users) as R
+        is GetRepoLatestCommit -> getRepoLatestCommit(action) as R
         else -> throw UnsupportedOperationException()
     }
-
 }
 
 private fun getUser(action: GetUser, users: Map<String, UserDetails>) = users[action.username]
-private fun getRepoLatestCommit(action: GetRepoLatestCommit, users: Map<String, UserDetails>) = Commit(action.owner)
+private fun getRepoLatestCommit(action: GetRepoLatestCommit) = Commit(action.owner)
 
 
 fun SetHeader(name: String, value: String): Filter = TODO()
@@ -155,7 +154,7 @@ object result4k {
     data class GetUser(val username: String) : GitHubApiAction<UserDetails> {
         override fun toRequest() = Request(GET, "/users/$username")
         override fun fromResponse(response: Response) = when {
-            response.status.successful -> Success(UserDetails(response.userName(), response.userOrgs()))
+            response.status.successful -> Success(UserDetails(userNameFrom(response), userOrgsFrom(response)))
             else -> Failure(RuntimeException("API returned: " + response.status))
         }
     }
