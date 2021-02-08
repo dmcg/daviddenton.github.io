@@ -198,7 +198,7 @@ class RecordingGitHubApi(private val delegate: GitHubApi) : GitHubApi {
     }
 }
 
-val recorder = RecordingGitHubApi()
+val recorder = RecordingGitHubApi(GitHubApi.Http(JavaHttpClient()))
 recorder.getUser("bob")
 
 println(recorder.recorded)
