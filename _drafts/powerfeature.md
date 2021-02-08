@@ -22,7 +22,7 @@ href="https://pixabay.com/photos/power-lines-fields-sunset-twilight-532720">
 <hr/>
 
 Of all the features that developers enthuse about in the Kotlin world, one of the ones that you hear about least is the
-humble `Companion Object`. On the face of it, they are merely a convenient stand-in for where you could put static state.
+humble [Companion Object](https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects). On the face of it, they are merely a convenient stand-in for where you could put static state.
 But to dismiss them as such is prematurely writing them off - there are several very interesting use-cases that we have
 discovered for them.
 
@@ -32,7 +32,7 @@ trusty `LocalDate` class.
 #### API extension points
 A basic (and arguably the most boring) ability that Companion Objects give us is as extension points for growing
 collections of similarly themed functions or values. If you define a simple concept or abstraction that will be used and
-reused in your system I'd encourage the addition of a companion object onto the class/interface definition. This
+reused in your system, I'd encourage the addition of a companion object onto the class/interface definition. This
 provides both a place to attach extensions which are not relevant to the core concept in all scenarios and avoids
 muddying the waters... imagine how intimidating it is for a Developer (or yourself having written it!) to come across an
 interface with twenty functions instead of two!
@@ -130,7 +130,7 @@ val delivery = DeliveryDate.asResult("2099-12-31")
 <hr/>
 
 ### Summary
-Although most of the patterns above are concentrated around value object construction, these are only the ones we have thought of - there are bound to be a bunch more just waiting to be discovered. This process has reinforced in my development work that we should be scratching beneath the surface in Kotlin features to see what it possible. As with a lot of inventions, it's possible that even JetBrains didn't really appreciate the depth which would be unlocked by adding such a humble feature - I'd be fascinated to learn of any of these types of uses in the Kotlin standard libraries.
+Although most of the patterns above are concentrated around value object construction, these are only the ones we have thought of - there are bound to be a bunch more just waiting to be discovered. The realisation of these abilities has reinforced in my development work that we should be scratching beneath the surface in Kotlin features to see what it possible. As with a lot of inventions, it's possible that even JetBrains didn't really appreciate the depth which would be unlocked by adding such a humble feature - I'd be fascinated to learn of any of these types of uses in the Kotlin standard libraries.
 
 <hr/>
 
