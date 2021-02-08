@@ -1,8 +1,8 @@
 buildscript {
     ext.kotlin_version = "1.4.30"
-    ext.http4k_version = "4.2.0.0"
+    ext.http4k_version = "4.3.0.0"
     ext.mockk_version = "1.10.5"
-    ext.junit_version = "5.7.0"
+    ext.junit_version = "5.7.1"
 
     repositories {
         mavenCentral()
@@ -16,7 +16,6 @@ buildscript {
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 apply plugin: 'kotlin'
@@ -24,14 +23,14 @@ apply plugin: 'kotlin'
 sourceSets {
     test {
         kotlin {
-            srcDirs += "_drafts"
+            srcDirs += "_code"
             srcDirs += "_posts"
         }
     }
 }
 
 dependencies {
-    implementation("dev.forkhandles:result4k:1.8.1.0")
+    implementation("dev.forkhandles:result4k:1.8.2.0")
     implementation("org.http4k:http4k-core:$http4k_version")
     implementation("org.http4k:http4k-client-okhttp:$http4k_version")
     implementation("org.http4k:http4k-server-netty:$http4k_version")
