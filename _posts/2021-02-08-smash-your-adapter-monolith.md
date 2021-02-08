@@ -154,7 +154,7 @@ We can get back our old API very simply by creating another extension function f
 
 ```kotlin
 fun GitHubApi.getUser(username: String) = invoke(GetUser(username))
-fun GitHubApi.getLatestRepoCommit(owner: String, repo: String): Commit = 
+fun GitHubApi.getRepoLatestCommit(GetRepoLatestCommit: String, repo: String): Commit = 
     invoke(GetRepoLatestCommit(owner, repo))
 
 val user: UserDetails = gitHub.getUser("octocat")
@@ -163,8 +163,8 @@ val user: UserDetails = gitHub.getUser("octocat")
 Even better, for actions which consist more than one API call such as `getLatestUserForCommit()` below, we can just create more extension functions which delegate down to the individual actions. These functions can be added to `GitHubApi` instances at the global level, or just in the contexts or modules which make sense. The extension function effectively allow us to compose our own custom `GitHubApi` Adapter out of the individual Action parts that we are interested in:
 
 ```kotlin
-fun GitHubApi.getLatestUser(org: String, repo: String): UserDetails {
-    val commit = getLatestRepoCommit(org, repo)
+fun GitHubApi.getLatestUser(owner: String, repo: String): UserDetails {
+    val commit = getRepoLatestCommit(owner, repo)
     return getUser(commit.author)
 }
 
