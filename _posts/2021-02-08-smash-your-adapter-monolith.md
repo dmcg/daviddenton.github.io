@@ -60,7 +60,7 @@ Additionally, because we have modularised the code in this way, it is also reusa
 When it comes to **4)** of the list above - adapter code for other remote APIs - we don't generally have a pattern in place to use the same structure. HTTP adapters to remote systems are usually constructed as monolithic classes with many methods, all built around a singularly configured HTTP adapter. Let's say we want to talk to the GitHub API, we would normally build an API adapter like so:
 
 ```kotlin
- class GitHubApi(client: HttpHandler) {
+class GitHubApi(client: HttpHandler) {
     private val http = SetBaseUriFrom(Uri.of("https://api.github.com"))
         .then(SetHeader("Accept", "application/vnd.github.v3+json"))
         .then(client)
@@ -71,15 +71,12 @@ When it comes to **4)** of the list above - adapter code for other remote APIs -
     }
 
     fun getRepoLatestCommit(owner: String, repo: String) = Commit(
-        authorFrom(
-            http(Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1"))
-        )
+        authorFrom(http(Request(GET, "/repos/$owner/$repo/commits").query("per_page", "1")))
     )
 }
 
 val gitHub: GitHubApi = GitHubApi(OkHttp())
 val user: UserDetails = gitHub.getUser("octocat")
-
 ```
 
 This is all quite sensible - there is a shared HTTP client which is configured to send requests to the API with the correct `Accept` header. Unfortunately though, as our usage of the API grows, so will the size of the `GitHubApi` class - it may gain many (10s or even 100s of individual) functions, all of which generally provide singular access to a single API call. We end up with a monolith object which can be thousands of lines long if left unchecked.
