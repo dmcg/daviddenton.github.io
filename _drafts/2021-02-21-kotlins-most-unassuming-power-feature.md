@@ -6,7 +6,7 @@ comments: false
 thumbnail: assets/img/powerfeature.jpg
 ---
 
-In which I briefly argue the case for Kotlin's Companion Objects being the Clark Kent of language features, in being deceptively powerful, and how we can use them in creating ways to supercharge our API design.
+In which I briefly argue the case for Kotlin's Companion Objects being the Clark Kent of language features, in being deceptively powerful, and how we can use them to supercharge our API design.
 
 <hr/>
 
