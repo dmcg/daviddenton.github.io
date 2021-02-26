@@ -6,8 +6,7 @@ comments: false
 thumbnail: assets/img/powerfeature.jpg
 ---
 
-In which I argue the case for Kotlin's Companion Objects being the Clark Kent of language features, in being deceptively
-powerful, and how we can use them in creating ways to supercharge our API design.
+In which I briefly argue the case for Kotlin's Companion Objects being the Clark Kent of language features, in being deceptively powerful, and how we can use them in creating ways to supercharge our API design.
 
 <hr/>
 
@@ -26,7 +25,7 @@ humble [Companion Object](https://kotlinlang.org/docs/reference/object-declarati
 But to dismiss them as such is prematurely writing them off - there are several very interesting use-cases that we have
 discovered for them.
 
-Don't believe me? I'd be disappointed if you did 😉. Let's dive in with some simple examples, all based around the Java's
+Don't believe me? I'd be disappointed if you did 😉. Let's dive in with a few simple examples, all based around the Java's
 trusty `LocalDate` class.
 
 #### API extension points
@@ -58,7 +57,7 @@ val thisCentury = Validation.between(LocalDate.of(2000, 1, 1), LocalDate.of(2099
 val isTrue = thisCentury(LocalDate.of(2021, 1, 1))
 ```
 
-#### Parsers/Validators
+#### Parsers/Factories
 We also can utilise the Companion Objects to provide a place to ensure correct construction of micro-types from other
 formats (these can also, as above, be external to the a base class as appropriate). In the example below we have a
 simple value wrapper for `LocalDate`. But we also want to be able to parse, validate and show the value correctly from our
@@ -82,11 +81,9 @@ val string = BirthDate.show(birth) // prints "1976-244"
 ```
 
 #### Vary your programming model!
-One problem with the above approach is that traditional parse/require pattern blows up with an exception when an error
-occurs - standard object construction techniques don't give us a chance to apply more functional programming models such
-as Result/Either monads to our domain.
+One problem with the above approach is that traditional parse/require pattern blows up with an exception when a validation error occurs - standard object construction techniques don't give us a chance to apply more functional programming models such as Result/Either monads to our domain.
 
-In these models, we actively try to avoid Exceptions - to help us here we can privatise the `BirthDate` constructor and write a  function to capture the error into a [Result4k](https://github.com/fork-handles/forkhandles/tree/trunk/result4k) type which we can then `map/flatMap()` over:
+In these models, we actively try to avoid Exceptions - to help us here we can privatise the `BirthDate` constructor and write a function to capture the error into a [Result4k](https://github.com/fork-handles/forkhandles/tree/trunk/result4k) type which we can then `map/flatMap()` over:
 
 ```kotlin
 data class BirthDate private constructor(val value: LocalDate) {
@@ -104,7 +101,7 @@ val birth: Result<BirthDate, String> = BirthDate.asResult(LocalDate.of(1999, 12,
 If we want to plug in a different result monad (say Arrow's `Either`) or to return `null` on failure, it is trivial to add extension functions to cover these types. The companion object is giving us options...
 
 #### Extract and reuse!
-What a lot of developers don't appreciate is that Companion Objects have exactly the same capabilities as any other Kotlin object - and this includes inheritance. Rewinding back to a simpler Exception-based parse example, we can extract commonality to superclasses/interfaces/delegates which can be also mixed into our Companion Object in the standard fashion. Taking this one step further, we realise that any extension functions added to the superclass/interfaces will then automatically be added to our Companion Objects as well!
+What a lot of developers don't appreciate is that the Companion has exactly the same capabilities as any other Kotlin object - and this includes inheritance. Rewinding back to a simpler Exception-based parse example, we can extract commonality to superclasses/interfaces/delegates which can be also mixed into our Companion Object in the standard fashion. Taking this one step further, we realise that any extension functions added to the superclass/interfaces will then automatically be added to our Companion Objects as well!
 
 Here we have extracted out a common superclass `DateValueFactory` for all "Date wrapper" classes - and each of the functions on this class are now inherited by both `OrderDate` and `DeliveryDate` (via their Companions). As mentioned before, we have also added an extension function to all `DateValueFactory` instances for the Result4k construction case:
 
@@ -130,9 +127,9 @@ val delivery = DeliveryDate.asResult("2099-12-31")
 <hr/>
 
 ### Summary
-Although most of the patterns above are concentrated around value object construction, these are only the ones we have thought of - there are bound to be a bunch more just waiting to be discovered. The realisation of these abilities has reinforced in my development work that we should be scratching beneath the surface in Kotlin features to see what it possible. As with a lot of inventions, it's possible that even JetBrains didn't really appreciate the depth which would be unlocked by adding such a humble feature - I'd be fascinated to learn of any of these types of uses in the Kotlin standard libraries.
+Although most of the patterns above are concentrated around value object construction, these are only the ones we have come across and extracted over the last few years - there are bound to be a bunch more just waiting to be discovered. The realisation of these abilities has reinforced in my development work that we should be scratching beneath the surface in Kotlin features to see what it possible. As with a lot of inventions, it's possible that even JetBrains didn't really appreciate the depth which would be unlocked by adding such a humble feature - I'd be fascinated to learn of any of these types of uses in the Kotlin standard libraries.
 
 <hr/>
 
 ### PS.
-For a practical example of how the these type-creation techniques are used the real world, you can take a look at the foundational [Values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) library, which uses them to provide instantiation, validation, parsing and printing of value types.
+For a practical example of how the these type-creation techniques are used the real world, you can take a look at the foundational [Values4k](https://github.com/fork-handles/forkhandles/tree/trunk/values4k) library, which uses them to provide instantiation, validation, parsing and printing of immutable value types.
