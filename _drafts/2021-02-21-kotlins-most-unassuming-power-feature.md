@@ -49,12 +49,18 @@ fun interface Validation : (LocalDate) -> Boolean {
 }
 
 val Validation.Companion.future get() = Validation { it.isAfter(LocalDate.now()) }
+
 fun Validation.Companion.between(start: LocalDate, end: LocalDate) =
     Validation { it.isAfter(start) && it.isBefore(end) }
 
-val isFalse = Validation.future(LocalDate.of(2021, 1, 1))
-val thisCentury = Validation.between(LocalDate.of(2000, 1, 1), LocalDate.of(2099, 12, 31))
-val isTrue = thisCentury(LocalDate.of(2021, 1, 1))
+// for this data...
+val jan1 = LocalDate.of(2021, 1, 1)
+val dec31 =  LocalDate.of(2021, 12, 31)
+
+// we can use the Validation like so...
+val isFalse = Validation.future(jan1)
+val thisCentury = Validation.between(jan1, dec31)
+val isTrue = thisCentury(jan1)
 ```
 
 #### Parsers/Factories
