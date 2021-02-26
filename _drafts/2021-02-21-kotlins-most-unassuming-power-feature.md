@@ -127,7 +127,9 @@ val delivery = DeliveryDate.asResult("2099-12-31")
 <hr/>
 
 ### Summary
-Although most of the patterns above are concentrated around value object construction, these are only the ones we have come across and extracted over the last few years - there are bound to be a bunch more just waiting to be discovered. The realisation of these abilities has reinforced in my development work that we should be scratching beneath the surface in Kotlin features to see what it possible. As with a lot of inventions, it's possible that even JetBrains didn't really appreciate the depth which would be unlocked by adding such a humble feature - I'd be fascinated to learn of any of these types of uses in the Kotlin standard libraries.
+I've covered only a couple of use-cases above which I've come across in the last few years of using Kotlin, but this is bound to be the tip of the iceberg and there are bound to be a bunch more just waiting to be discovered. The realisation of these abilities has reinforced my belief that we should be scratching beneath the surface in Kotlin features to see what it possible. 
+
+As with a lot of inventions, it's possible that even JetBrains didn't really appreciate the depth which would be unlocked by adding such a humble feature - I'd be fascinated to learn of any of these types of uses in the Kotlin standard libraries.
 
 <hr/>
 
